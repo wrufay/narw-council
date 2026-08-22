@@ -37,14 +37,19 @@
   color: var(--tier-high);
 }
 
-.history__empty {
-  margin: 0;
-  padding: 32px;
+.history__sample-banner {
+  margin: -8px 0 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
   color: var(--text-2);
-  text-align: center;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+}
+
+.history__folder--sample {
+  opacity: 0.8;
+}
+
+.history__folder--sample:hover {
+  opacity: 1;
 }
 
 .history__grid {
