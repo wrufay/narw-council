@@ -1,0 +1,187 @@
+[
+  {
+    "path": "64104003.wav",
+    "species": "Minke_Whale",
+    "group": "minke"
+  },
+  {
+    "path": "6301901A.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "9220100T.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "6107900I.wav",
+    "species": "Fin,_Finback_Whale",
+    "group": "fin"
+  },
+  {
+    "path": "55113004.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "55113001.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "9220100D.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "6304300N.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "7001800U.wav",
+    "species": "Northern_Right_Whale",
+    "group": "NARW"
+  },
+  {
+    "path": "64104005.wav",
+    "species": "Minke_Whale",
+    "group": "minke"
+  },
+  {
+    "path": "60009006.wav",
+    "species": "Fin,_Finback_Whale",
+    "group": "fin"
+  },
+  {
+    "path": "63019007.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "81015005.wav",
+    "species": "Northern_Right_Whale",
+    "group": "NARW"
+  },
+  {
+    "path": "74003001.wav",
+    "species": "Northern_Right_Whale",
+    "group": "NARW"
+  },
+  {
+    "path": "6107900E.wav",
+    "species": "Fin,_Finback_Whale",
+    "group": "fin"
+  },
+  {
+    "path": "5601601O.wav",
+    "species": "Northern_Right_Whale",
+    "group": "NARW"
+  },
+  {
+    "path": "6106400B.wav",
+    "species": "Fin,_Finback_Whale",
+    "group": "fin"
+  },
+  {
+    "path": "61079002.wav",
+    "species": "Fin,_Finback_Whale",
+    "group": "fin"
+  },
+  {
+    "path": "8101402F.wav",
+    "species": "Northern_Right_Whale",
+    "group": "NARW"
+  },
+  {
+    "path": "92201007.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "6301901V.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "6301901D.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "6000900M.wav",
+    "species": "Fin,_Finback_Whale",
+    "group": "fin"
+  },
+  {
+    "path": "6301901U.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "55113003.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "61048005.wav",
+    "species": "Fin,_Finback_Whale",
+    "group": "fin"
+  },
+  {
+    "path": "56025009.wav",
+    "species": "Northern_Right_Whale",
+    "group": "NARW"
+  },
+  {
+    "path": "81015002.wav",
+    "species": "Northern_Right_Whale",
+    "group": "NARW"
+  },
+  {
+    "path": "6107900C.wav",
+    "species": "Fin,_Finback_Whale",
+    "group": "fin"
+  },
+  {
+    "path": "59003001.wav",
+    "species": "Northern_Right_Whale",
+    "group": "NARW"
+  },
+  {
+    "path": "6106400D.wav",
+    "species": "Fin,_Finback_Whale",
+    "group": "fin"
+  },
+  {
+    "path": "55113002.wav",
+    "species": "Humpback_Whale",
+    "group": "humpback"
+  },
+  {
+    "path": "70014002.wav",
+    "species": "Northern_Right_Whale",
+    "group": "NARW"
+  },
+  {
+    "path": "56017008.wav",
+    "species": "Northern_Right_Whale",
+    "group": "NARW"
+  },
+  {
+    "path": "61039001.wav",
+    "species": "Fin,_Finback_Whale",
+    "group": "fin"
+  },
+  {
+    "path": "81014029.wav",
+    "species": "Northern_Right_Whale",
+    "group": "NARW"
+  },
+  {
+    "path": "64103008.wav",
+    "species": "Minke_Whale",
+    "group": "minke"
+  }
+]

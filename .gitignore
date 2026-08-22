@@ -4,3 +4,6 @@ __pycache__/
 venv/
 .env
 .DS_Store
+
+# regenerable via scripts/fetch_data.py - not vendored into git
+data/
