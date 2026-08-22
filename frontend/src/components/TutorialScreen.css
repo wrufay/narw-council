@@ -1,82 +1,97 @@
 .tutorial {
-  background: var(--bg);
-  padding-bottom: 80px;
-}
-
-.tutorial__heading {
   position: relative;
-  z-index: 2;
-  margin: 24px 0 0;
-  text-align: center;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(40px, 6vw, 64px);
-  color: var(--text-2);
+  min-height: 100vh;
+  background: var(--bg);
+  overflow: hidden;
 }
 
-.tutorial__glow {
+.tutorial__bg-photo {
   position: absolute;
-  top: 140px;
-  left: -15%;
-  width: 130%;
-  height: 300px;
-  filter: blur(40px);
-  pointer-events: none;
-  opacity: 0.7;
-}
-
-.tutorial__glow img {
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 30%;
+  opacity: 0.45;
 }
 
-.tutorial__body {
+.tutorial__bg-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 26, 64, 0.6) 0%,
+    rgba(6, 26, 64, 0.78) 45%,
+    rgba(6, 26, 64, 0.97) 100%
+  );
+}
+
+.tutorial__content {
   position: relative;
   z-index: 2;
-  max-width: 700px;
-  padding: 80px 5vw 0;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 96px 24px 96px;
+}
+
+.tutorial__eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--tier-high);
+  margin-bottom: 24px;
 }
 
 .tutorial__quote {
   margin: 0 0 32px;
-  font-size: clamp(28px, 4vw, 40px);
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  line-height: 1.25;
   color: var(--text);
 }
 
-.tutorial__quote strong {
-  font-weight: 700;
-  font-size: 1.4em;
-  line-height: 1.2;
+.tutorial__quote em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--tier-high);
 }
 
 .tutorial__copy {
-  font-size: 20px;
-  line-height: 1.5;
-  color: var(--text);
-  margin: 0 0 20px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text-2);
+  margin: 0 0 18px;
 }
 
 .tutorial__start {
-  margin-top: 24px;
-  background: var(--surface-2);
+  margin-top: 28px;
+  background: var(--tier-high);
+  color: var(--bg);
+  border: none;
+  font-weight: 700;
   border-radius: 8px;
-  font-size: 28px;
-  padding: 16px 40px;
+  font-size: 16px;
+  padding: 16px 32px;
 }
 
 .tutorial__whale {
   position: absolute;
-  right: -5%;
-  bottom: 0;
-  width: 55%;
-  max-width: 620px;
-  opacity: 0.4;
+  z-index: 1;
+  right: -8%;
+  bottom: -6%;
+  width: 46%;
+  max-width: 560px;
+  opacity: 0.35;
   pointer-events: none;
 }
 
-.tutorial__whale img {
-  width: 100%;
-  height: auto;
-  display: block;
+@media (max-width: 640px) {
+  .tutorial__whale {
+    width: 70%;
+    right: -20%;
+    bottom: 0;
+  }
 }

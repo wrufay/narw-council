@@ -10,17 +10,5 @@ services:
         value: 3.13.5
     healthCheckPath: /health
 
-  - type: web
-    name: narw-council-frontend
-    runtime: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    envVars:
-      - key: VITE_API_BASE_URL
-        value: https://narw-council.onrender.com
-      - key: VITE_MAPBOX_TOKEN
-        sync: false
-    routes:
-      - source: /*
-        destination: /index.html
+# Frontend is deployed via Vercel (see frontend/vercel.json), not Render -
+# this file only covers the backend.

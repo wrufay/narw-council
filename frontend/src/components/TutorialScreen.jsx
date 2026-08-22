@@ -1,24 +1,26 @@
-import tutorialGlow from '../assets/tutorial-glow.png'
+import { useNavigate } from 'react-router-dom'
+import heroWaves from '../assets/splash-waves.png'
 import tutorialWhale from '../assets/tutorial-whale.png'
 import TopNav from './TopNav.jsx'
 import './TutorialScreen.css'
 
-export default function TutorialScreen({ onNavigate, onStart }) {
+export default function TutorialScreen() {
+  const navigate = useNavigate()
+
   return (
     <div className="narw-screen tutorial">
-      <TopNav onNavigate={onNavigate} />
+      <img className="tutorial__bg-photo" src={heroWaves} alt="" />
+      <div className="tutorial__bg-gradient" />
 
-      <h1 className="tutorial__heading">Tutorial</h1>
+      <TopNav />
 
-      <div className="tutorial__glow">
-        <img src={tutorialGlow} alt="" />
-      </div>
+      <div className="tutorial__content">
+        <span className="tutorial__eyebrow">How It Works</span>
 
-      <div className="tutorial__body">
         <p className="tutorial__quote">
-          <span>"I think I heard a </span>
-          <strong>right whale</strong>
-          <span>."</span>
+          <span>&ldquo;I think I heard a </span>
+          <em>right whale</em>
+          <span>.&rdquo;</span>
         </p>
 
         <p className="tutorial__copy">
@@ -33,14 +35,12 @@ export default function TutorialScreen({ onNavigate, onStart }) {
           If you get a Possible NARW or higher, you can directly notify the team.
         </p>
 
-        <button className="pill-btn tutorial__start" onClick={onStart}>
-          Start Now
+        <button className="pill-btn tutorial__start" onClick={() => navigate('/run/classify')}>
+          Start Now &rarr;
         </button>
       </div>
 
-      <div className="tutorial__whale">
-        <img src={tutorialWhale} alt="" />
-      </div>
+      <img className="tutorial__whale" src={tutorialWhale} alt="" />
     </div>
   )
 }

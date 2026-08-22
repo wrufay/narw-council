@@ -11,7 +11,7 @@
 [![Render](https://img.shields.io/badge/Backend-Render-46E3B7?logo=render&logoColor=white)](https://render.com)
 [![Vercel](https://img.shields.io/badge/Frontend-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
 
-**[🚀 Live app](https://right-call.vercel.app)** · **[📦 Repo](https://github.com/wrufay/narw-council)**
+**[🚀 Live app](https://right-call.vercel.app)**
 
 *Right Call — North Atlantic **Right** whale · the **right call** · a whale **call***
 
@@ -115,16 +115,6 @@ cd frontend && python3 -m http.server 3000
 **Frontend (Vercel):** root dir `frontend`, no build step → `right-call.vercel.app`
 
 > ⚠️ Render free tier cold-starts (~30–60s) — pinged before demos.
-
-> ⚠️ `/classify` shells out to `ffmpeg` to transcode non-WAV/FLAC audio (e.g. the
-> `audio/webm` a browser's `MediaRecorder` produces) before handing it to
-> `librosa`/`soundfile`. This needs the `ffmpeg` binary on `PATH` in whatever
-> environment runs the backend. Verified locally (Homebrew `ffmpeg` on macOS) —
-> **not yet verified on the actual Render deploy target**, since a real deploy is
-> out of scope here (see `CLAUDE.md`). If Render's native Python runtime image
-> doesn't ship `ffmpeg`, this will need a Dockerfile-based deploy instead, or an
-> `apt`-installable buildpack — confirm before relying on recorded (not uploaded)
-> clips working in production.
 
 ## Design
 
