@@ -2,31 +2,31 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
-Vote = Literal["pass", "warn", "fail"]
 ConfidenceTier = Literal["high", "medium", "low"]
-SpeciesPrediction = Literal["NARW", "uncertain", "not_NARW"]
+Prediction = Literal["NARW", "not_NARW"]
 
 
-class CouncilCheck(BaseModel):
-    check: str
-    vote: Vote
+class CouncilVote(BaseModel):
+    vote: bool
     score: float
-    detail: str
+
+
+class Council(BaseModel):
+    contour_shape: CouncilVote
+    texture_lbp: CouncilVote
+    noise_check: CouncilVote
 
 
 class ClassifyResponse(BaseModel):
     model_config = ConfigDict(protected_namespaces=())
 
-    species_prediction: SpeciesPrediction
+    prediction: Prediction
+    confidence: float
     confidence_tier: ConfidenceTier
-    confidence_score: float
-    council: list[CouncilCheck]
-    audio_duration_sec: float
-    model_version: str
+    council: Council
 
 
 class HealthResponse(BaseModel):
     model_config = ConfigDict(protected_namespaces=())
 
     status: Literal["ok"]
-    model_version: str
