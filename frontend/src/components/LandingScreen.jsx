@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import whaleTop from '../assets/landing-whale-top.png'
@@ -8,8 +9,47 @@ import './LandingScreen.css'
 const PAPER_URL = 'https://arxiv.org/pdf/1611.04947'
 const REPO_URL = 'https://github.com/wrufay/narw-council'
 
+const HEADLINE = 'Right Call'
+const TYPE_SPEED_MS = 75
+const TYPE_START_DELAY_MS = 250
+
+function useTypewriter(text, { speed = 75, startDelay = 0 } = {}) {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const reduceMotion =
+      typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduceMotion) {
+      setCount(text.length)
+      return
+    }
+
+    setCount(0)
+    let intervalId
+    const startId = setTimeout(() => {
+      intervalId = setInterval(() => {
+        setCount((c) => {
+          if (c >= text.length) {
+            clearInterval(intervalId)
+            return c
+          }
+          return c + 1
+        })
+      }, speed)
+    }, startDelay)
+
+    return () => {
+      clearTimeout(startId)
+      clearInterval(intervalId)
+    }
+  }, [text, speed, startDelay])
+
+  return { typed: text.slice(0, count), done: count >= text.length }
+}
+
 export default function LandingScreen() {
   const navigate = useNavigate()
+  const { typed, done } = useTypewriter(HEADLINE, { speed: TYPE_SPEED_MS, startDelay: TYPE_START_DELAY_MS })
 
   return (
     <div className="narw-screen landing">
@@ -40,11 +80,13 @@ export default function LandingScreen() {
           <span className="landing__eyebrow">North Atlantic Right Whale</span>
           <motion.h1
             className="landing__headline"
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
           >
-            Right Call
+            <span aria-hidden="true">{typed}</span>
+            <span className={`landing__headline-cursor ${done ? 'landing__headline-cursor--done' : ''}`} aria-hidden="true" />
+            <span className="sr-only">{HEADLINE}</span>
           </motion.h1>
           <p className="landing__subhead">
             Was that really a right whale? Find out in seconds, not hours.
