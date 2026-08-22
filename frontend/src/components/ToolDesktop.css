@@ -164,38 +164,6 @@
   gap: 8px;
 }
 
-.tool-desktop__alert-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px 5px 8px;
-  border-radius: 100px;
-  border: 1px solid rgba(255, 95, 87, 0.5);
-  background: rgba(255, 95, 87, 0.16);
-  color: #ff5f57;
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-.tool-desktop__alert-btn:hover:not(:disabled) {
-  background: rgba(255, 95, 87, 0.28);
-}
-
-.tool-desktop__alert-btn:disabled {
-  cursor: default;
-  opacity: 0.8;
-}
-
-.tool-desktop__alert-btn--sent {
-  border-color: rgba(117, 142, 79, 0.5);
-  background: rgba(117, 142, 79, 0.16);
-  color: var(--tier-high);
-}
-
 .tool-desktop__theme-toggle {
   display: flex;
   align-items: center;

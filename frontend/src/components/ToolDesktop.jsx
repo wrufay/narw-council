@@ -1,11 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { FISHERIES } from '../data/fisheries.js'
 import './ToolDesktop.css'
 
 const THEME_KEY = 'narw-tool-theme'
-const ALERT_RESET_MS = 3000
 
 const DOCK_ITEMS = [
   {
@@ -48,6 +46,20 @@ const DOCK_ITEMS = [
       </svg>
     ),
   },
+  {
+    to: '/run/history',
+    label: 'history',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M3 6a2 2 0 012-2h4l1.6 1.6H19a2 2 0 012 2V17a2 2 0 01-2 2H5a2 2 0 01-2-2V6z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+  },
 ]
 
 const prefersReducedMotion =
@@ -62,9 +74,6 @@ export default function ToolDesktop() {
       return 'dark'
     }
   })
-  const [alerted, setAlerted] = useState(false)
-  const alertTimeoutRef = useRef(null)
-
   useEffect(() => {
     try {
       localStorage.setItem(THEME_KEY, theme)
@@ -72,14 +81,6 @@ export default function ToolDesktop() {
       // ignore - theme just won't persist
     }
   }, [theme])
-
-  useEffect(() => () => clearTimeout(alertTimeoutRef.current), [])
-
-  function handleAlertAllFisheries() {
-    setAlerted(true)
-    clearTimeout(alertTimeoutRef.current)
-    alertTimeoutRef.current = setTimeout(() => setAlerted(false), ALERT_RESET_MS)
-  }
 
   const activeItem = DOCK_ITEMS.find((item) => location.pathname.startsWith(item.to))
 
@@ -105,30 +106,6 @@ export default function ToolDesktop() {
           <span className="tool-desktop__title">{activeItem?.label ?? 'NARW Council'}</span>
 
           <div className="tool-desktop__titlebar-actions">
-            <button
-              className={`tool-desktop__alert-btn ${alerted ? 'tool-desktop__alert-btn--sent' : ''}`}
-              onClick={handleAlertAllFisheries}
-              disabled={alerted}
-              title={`Simulated - notifies all ${FISHERIES.length} fleet zones, not just ones in range`}
-            >
-              {alerted ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M4 12.5l5 5L20 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              ) : (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M12 3a5.5 5.5 0 00-5.5 5.5c0 4.2-1.5 5.7-2.2 6.4a.7.7 0 00.5 1.2h14.4a.7.7 0 00.5-1.2c-.7-.7-2.2-2.2-2.2-6.4A5.5 5.5 0 0012 3z"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinejoin="round"
-                  />
-                  <path d="M9.5 19a2.5 2.5 0 005 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                </svg>
-              )}
-              <span>{alerted ? 'Alerted (simulated)' : 'Alert All Fisheries'}</span>
-            </button>
-
             <button
               className="tool-desktop__theme-toggle"
               onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
