@@ -87,6 +87,10 @@ export default function ToolDesktop() {
             <NavLink to="/" className="tool-desktop__dot tool-desktop__dot--red" aria-label="Close, back to home" />
           </div>
 
+          <span className="tool-desktop__title">
+            {location.pathname.startsWith('/run/map') ? 'Right Risks — Historical Data' : ''}
+          </span>
+
           <div className="tool-desktop__titlebar-actions">
             <button
               className="tool-desktop__theme-toggle"
