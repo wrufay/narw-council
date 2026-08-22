@@ -116,7 +116,7 @@ export default function HistoryScreen({ history }) {
   }
 
   return (
-    <div className="narw-screen history">
+    <div className="history">
       <div className="history__toolbar">
         {openDate ? (
           <button className="history__back" onClick={handleBack}>

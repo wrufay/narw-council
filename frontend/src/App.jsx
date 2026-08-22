@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react'
-import SplashScreen from './components/SplashScreen.jsx'
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
+import LandingScreen from './components/LandingScreen.jsx'
 import TutorialScreen from './components/TutorialScreen.jsx'
+import ToolDesktop from './components/ToolDesktop.jsx'
+import PageTransition from './components/PageTransition.jsx'
 import RecordScreen from './components/RecordScreen.jsx'
 import ResultsScreen from './components/ResultsScreen.jsx'
 import MapScreen from './components/MapScreen.jsx'
-import HistoryScreen from './components/HistoryScreen.jsx'
 import { classifyAudio, ClassifyError } from './lib/api.js'
 import { FALLBACK_COORDS, nearestZoneName } from './data/fisheries.js'
 import { haversineDistanceKm } from './lib/geo.js'
 
 export default function App() {
-  const [screen, setScreen] = useState('splash')
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const [audioFile, setAudioFile] = useState(null)
   const [coords, setCoords] = useState(FALLBACK_COORDS)
@@ -56,7 +60,7 @@ export default function App() {
         },
         ...prev,
       ])
-      setScreen('results')
+      navigate('/run/council')
     } catch (err) {
       setError(err instanceof ClassifyError ? err.message : 'Something went wrong classifying that clip.')
     } finally {
@@ -67,35 +71,40 @@ export default function App() {
   function handleDismiss() {
     setResult(null)
     setAudioFile(null)
-    setScreen('record')
+    navigate('/run/classify')
   }
 
-  switch (screen) {
-    case 'tutorial':
-      return <TutorialScreen onNavigate={setScreen} onStart={() => setScreen('record')} />
-    case 'record':
-      return (
-        <RecordScreen
-          onNavigate={setScreen}
-          audioFile={audioFile}
-          onFileSelected={handleFileSelected}
-          onClassify={handleClassify}
-          isClassifying={isClassifying}
-          error={error}
-        />
-      )
-    case 'results':
-      return (
-        <ResultsScreen onNavigate={setScreen} result={result} coords={coords} onDismiss={handleDismiss} />
-      )
-    case 'map':
-      return (
-        <MapScreen onNavigate={setScreen} coords={coords} usedFallbackLocation={usedFallbackLocation} result={result} />
-      )
-    case 'history':
-      return <HistoryScreen onNavigate={setScreen} history={history} />
-    case 'splash':
-    default:
-      return <SplashScreen onTutorial={() => setScreen('tutorial')} onStart={() => setScreen('record')} />
-  }
+  // /run/* shares one persistent "monitor" frame - only cross into/out of it
+  // should trigger the outer page transition, not every switch inside it.
+  const sectionKey = location.pathname.startsWith('/run') ? '/run' : location.pathname
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={sectionKey}>
+        <Route path="/" element={<PageTransition><LandingScreen /></PageTransition>} />
+        <Route path="/tutorial" element={<PageTransition><TutorialScreen /></PageTransition>} />
+        <Route path="/run" element={<PageTransition><ToolDesktop /></PageTransition>}>
+          <Route index element={<Navigate to="classify" replace />} />
+          <Route
+            path="classify"
+            element={
+              <RecordScreen
+                audioFile={audioFile}
+                onFileSelected={handleFileSelected}
+                onClassify={handleClassify}
+                isClassifying={isClassifying}
+                error={error}
+                history={history}
+              />
+            }
+          />
+          <Route path="council" element={<ResultsScreen result={result} coords={coords} onDismiss={handleDismiss} />} />
+          <Route
+            path="map"
+            element={<MapScreen coords={coords} usedFallbackLocation={usedFallbackLocation} result={result} />}
+          />
+        </Route>
+      </Routes>
+    </AnimatePresence>
+  )
 }

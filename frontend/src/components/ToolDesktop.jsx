@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import './ToolDesktop.css'
 
 const THEME_KEY = 'narw-tool-theme'
@@ -8,7 +8,7 @@ const THEME_KEY = 'narw-tool-theme'
 const DOCK_ITEMS = [
   {
     to: '/run/classify',
-    label: 'classify',
+    label: 'Classify',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="12" r="7" stroke="currentColor" strokeWidth="1.8" />
@@ -18,7 +18,7 @@ const DOCK_ITEMS = [
   },
   {
     to: '/run/council',
-    label: 'council',
+    label: 'Council',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -33,7 +33,7 @@ const DOCK_ITEMS = [
   },
   {
     to: '/run/map',
-    label: 'map',
+    label: 'Map',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -43,20 +43,6 @@ const DOCK_ITEMS = [
           strokeLinejoin="round"
         />
         <circle cx="12" cy="9" r="2.4" stroke="currentColor" strokeWidth="1.8" />
-      </svg>
-    ),
-  },
-  {
-    to: '/run/history',
-    label: 'history',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M3 6a2 2 0 012-2h4l1.6 1.6H19a2 2 0 012 2V17a2 2 0 01-2 2H5a2 2 0 01-2-2V6z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
       </svg>
     ),
   },
@@ -82,8 +68,6 @@ export default function ToolDesktop() {
     }
   }, [theme])
 
-  const activeItem = DOCK_ITEMS.find((item) => location.pathname.startsWith(item.to))
-
   return (
     <div className="tool-desktop">
       <video
@@ -102,8 +86,6 @@ export default function ToolDesktop() {
           <div className="tool-desktop__traffic-lights">
             <NavLink to="/" className="tool-desktop__dot tool-desktop__dot--red" aria-label="Close, back to home" />
           </div>
-
-          <span className="tool-desktop__title">{activeItem?.label ?? 'NARW Council'}</span>
 
           <div className="tool-desktop__titlebar-actions">
             <button
@@ -136,18 +118,15 @@ export default function ToolDesktop() {
         </div>
 
         <div className="tool-desktop__content">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
-              className="tool-desktop__panel"
-            >
-              <Outlet context={{ theme }} />
-            </motion.div>
-          </AnimatePresence>
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 28, mass: 0.7 }}
+            className="tool-desktop__panel"
+          >
+            <Outlet context={{ theme }} />
+          </motion.div>
         </div>
       </div>
 
@@ -160,11 +139,11 @@ export default function ToolDesktop() {
               className={({ isActive }) => `tool-desktop__dock-item ${isActive ? 'tool-desktop__dock-item--active' : ''}`}
               aria-label={item.label}
             >
+              <span className="tool-desktop__dock-tooltip">{item.label}</span>
               <span className="tool-desktop__dock-icon">
                 {item.icon}
                 <span className="tool-desktop__dock-dot" />
               </span>
-              <span className="tool-desktop__dock-label">{item.label}</span>
             </NavLink>
           ))}
         </div>
