@@ -1,20 +1,40 @@
 .history {
-  background: var(--bg);
-  padding-bottom: 60px;
+  padding: 28px clamp(20px, 4vw, 40px) 40px;
 }
 
-.history__heading {
-  text-align: center;
-  margin: 40px 0 40px;
+.history__toolbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.history__toolbar-label {
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(48px, 7vw, 64px);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--text);
+}
+
+.history__toolbar-count {
+  font-family: var(--font-mono);
+  font-size: 12px;
   color: var(--text-2);
 }
 
-.history__panel {
-  width: min(1188px, 92vw);
-  margin: 0 auto;
+.history__back {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.history__back:hover {
+  color: var(--tier-high);
 }
 
 .history__empty {
@@ -25,6 +45,50 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
+}
+
+.history__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px 8px;
+}
+
+.history__folder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 8px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.history__folder:hover {
+  background: var(--surface);
+}
+
+.history__folder--selected {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+.history__folder-name {
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history__folder-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-2);
 }
 
 .history__list {
@@ -47,97 +111,83 @@
 .history__row-main {
   display: flex;
   align-items: center;
-  gap: 41px;
-  padding: 16px 18px;
-}
-
-.history__expand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  gap: 16px;
+  width: 100%;
+  padding: 14px 18px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
-  flex-shrink: 0;
+  text-align: left;
 }
 
 .history__dot {
-  width: 20px;
-  height: 20px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .history__arrow {
-  color: var(--text);
-  font-size: 20px;
-  transition: transform 0.15s ease;
+  color: var(--text-2);
+  font-size: 13px;
+  flex-shrink: 0;
   display: inline-block;
+  transition: transform 0.15s ease;
 }
 
 .history__arrow--open {
   transform: rotate(90deg);
 }
 
-.history__label-block {
+.history__row-label-block {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.history__label {
-  margin: 0;
+.history__row-label {
   font-family: var(--font-display);
-  font-size: 32px;
+  font-weight: 700;
+  font-size: 15px;
   color: var(--text);
 }
 
-.history__location {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 20px;
+.history__row-location {
+  font-size: 12px;
   color: var(--text-2);
 }
 
-.history__meta {
+.history__row-meta {
   display: flex;
   align-items: center;
-  gap: 38px;
+  gap: 20px;
   flex-shrink: 0;
 }
 
-.history__timestamp {
-  font-family: var(--font-display);
-  font-size: 24px;
+.history__row-time {
+  font-family: var(--font-mono);
+  font-size: 12px;
   color: var(--text-2);
   white-space: nowrap;
 }
 
-.history__score {
+.history__row-score {
   font-family: var(--font-mono);
-  font-size: 40px;
+  font-weight: 700;
+  font-size: 16px;
+  min-width: 44px;
+  text-align: right;
 }
 
-.history__details {
-  padding: 0 18px 20px 79px;
+.history__row-details {
+  padding: 0 18px 16px 46px;
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-2);
 }
 
-.history__details p {
-  margin: 4px 0;
+.history__row-details p {
+  margin: 3px 0;
 }
 
-@media (max-width: 640px) {
-  .history__row-main {
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .history__meta {
-    gap: 16px;
-    width: 100%;
-    justify-content: space-between;
-    padding-left: 32px;
-  }
-}
