@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useOutletContext } from 'react-router-dom'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { FISHERIES, PROXIMITY_RADIUS_KM } from '../data/fisheries.js'
@@ -9,6 +10,13 @@ const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
 
 const TIER_COLOR = { high: '#758e4f', medium: '#f6ae2d', low: '#6b7280' }
 
+// matched Mapbox pair - both blue-toned, just light/dark, instead of mixing
+// unrelated styles
+const MAP_STYLE = {
+  dark: 'mapbox://styles/mapbox/navigation-night-v1',
+  light: 'mapbox://styles/mapbox/navigation-day-v1',
+}
+
 // simple whale silhouette, no emoji - used both on the map marker (raw HTML)
 // and in the legend (JSX)
 const WHALE_ICON_SVG =
@@ -18,25 +26,30 @@ const WHALE_ICON_SVG =
   '</svg>'
 
 export default function MapScreen({ coords, usedFallbackLocation, result }) {
+  const { theme } = useOutletContext() ?? {}
   const containerRef = useRef(null)
   const mapRef = useRef(null)
   const whaleMarkerRef = useRef(null)
   const fisheriesMarkersRef = useRef([])
+  const coordsRef = useRef(coords)
+  coordsRef.current = coords
+  const appliedThemeRef = useRef(theme)
 
   useEffect(() => {
     if (!MAPBOX_TOKEN || !containerRef.current || mapRef.current) return
     mapboxgl.accessToken = MAPBOX_TOKEN
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: coords,
+      style: MAP_STYLE[theme] ?? MAP_STYLE.dark,
+      center: coordsRef.current,
       zoom: 6.2,
     })
     map.addControl(new mapboxgl.NavigationControl(), 'top-right')
     mapRef.current = map
 
-    map.on('load', () => {
-      map.addSource('proximity-radius', { type: 'geojson', data: circlePolygon(coords, PROXIMITY_RADIUS_KM) })
+    map.on('style.load', () => {
+      const c = coordsRef.current
+      map.addSource('proximity-radius', { type: 'geojson', data: circlePolygon(c, PROXIMITY_RADIUS_KM) })
       map.addLayer({
         id: 'proximity-radius-fill',
         type: 'fill',
@@ -49,7 +62,9 @@ export default function MapScreen({ coords, usedFallbackLocation, result }) {
         source: 'proximity-radius',
         paint: { 'line-color': '#145c9e', 'line-width': 2, 'line-dasharray': [2, 2] },
       })
+    })
 
+    map.on('load', () => {
       FISHERIES.forEach((f) => {
         const el = document.createElement('div')
         el.className = 'map-dot map-dot--outside'
@@ -61,7 +76,7 @@ export default function MapScreen({ coords, usedFallbackLocation, result }) {
       const whaleEl = document.createElement('div')
       whaleEl.className = 'map-whale'
       whaleEl.innerHTML = WHALE_ICON_SVG
-      whaleMarkerRef.current = new mapboxgl.Marker({ element: whaleEl }).setLngLat(coords).addTo(map)
+      whaleMarkerRef.current = new mapboxgl.Marker({ element: whaleEl }).setLngLat(coordsRef.current).addTo(map)
     })
 
     return () => {
@@ -72,6 +87,16 @@ export default function MapScreen({ coords, usedFallbackLocation, result }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // light/dark toggle -> swap the actual Mapbox style. setStyle wipes custom
+  // sources/layers (markers survive, they're DOM-based) so proximity-radius
+  // gets re-added on the next 'style.load'.
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map || !theme || theme === appliedThemeRef.current) return
+    appliedThemeRef.current = theme
+    map.setStyle(MAP_STYLE[theme] ?? MAP_STYLE.dark)
+  }, [theme])
 
   useEffect(() => {
     const map = mapRef.current

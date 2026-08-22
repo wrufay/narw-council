@@ -100,8 +100,6 @@ export default function ToolDesktop() {
         <div className="tool-desktop__titlebar">
           <div className="tool-desktop__traffic-lights">
             <NavLink to="/" className="tool-desktop__dot tool-desktop__dot--red" aria-label="Close, back to home" />
-            <span className="tool-desktop__dot tool-desktop__dot--yellow" />
-            <span className="tool-desktop__dot tool-desktop__dot--green" />
           </div>
 
           <span className="tool-desktop__title">{activeItem?.label ?? 'NARW Council'}</span>
@@ -170,7 +168,7 @@ export default function ToolDesktop() {
               transition={{ duration: 0.25, ease: 'easeInOut' }}
               className="tool-desktop__panel"
             >
-              <Outlet />
+              <Outlet context={{ theme }} />
             </motion.div>
           </AnimatePresence>
         </div>

@@ -147,13 +147,6 @@
   filter: brightness(1.15);
 }
 
-.tool-desktop__dot--yellow {
-  background: #febc2e;
-}
-
-.tool-desktop__dot--green {
-  background: #28c840;
-}
 
 .tool-desktop__title {
   justify-self: center;
@@ -263,18 +256,18 @@
 .tool-desktop__dock-item {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  gap: 3px;
+  padding: 6px 10px 4px;
+  border-radius: 16px;
   color: rgba(244, 247, 251, 0.75);
   text-decoration: none;
   transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
 }
 
 .tool-desktop__dock-item:hover {
-  transform: translateY(-4px) scale(1.08);
+  transform: translateY(-4px) scale(1.05);
   color: #ffffff;
   background: rgba(244, 247, 251, 0.1);
 }
@@ -283,9 +276,24 @@
   color: #ffffff;
 }
 
+.tool-desktop__dock-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.tool-desktop__dock-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
 .tool-desktop__dock-dot {
   position: absolute;
-  bottom: 2px;
+  bottom: -3px;
   left: 50%;
   transform: translateX(-50%);
   width: 4px;
