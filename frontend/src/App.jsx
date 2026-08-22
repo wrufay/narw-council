@@ -12,6 +12,23 @@ import { classifyAudio, ClassifyError } from './lib/api.js'
 import { FALLBACK_COORDS, nearestZoneName } from './data/fisheries.js'
 import { haversineDistanceKm } from './lib/geo.js'
 
+const HISTORY_KEY = 'narw-history'
+
+// history persists client-side only (localStorage) - the backend stays
+// stateless/no-database per CLAUDE.md, so this never touches the server.
+function loadHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    if (!Array.isArray(parsed)) return []
+    // timestamp round-trips through JSON as a string - rehydrate to a real Date
+    return parsed.map((entry) => ({ ...entry, timestamp: new Date(entry.timestamp) }))
+  } catch {
+    return []
+  }
+}
+
 export default function App() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -22,7 +39,16 @@ export default function App() {
   const [result, setResult] = useState(null)
   const [isClassifying, setIsClassifying] = useState(false)
   const [error, setError] = useState(null)
-  const [history, setHistory] = useState([])
+  const [history, setHistory] = useState(loadHistory)
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(history))
+    } catch {
+      // storage unavailable (private browsing, quota, etc.) - history just
+      // won't persist across a reload, rest of the app is unaffected
+    }
+  }, [history])
 
   useEffect(() => {
     if (!navigator.geolocation) return
