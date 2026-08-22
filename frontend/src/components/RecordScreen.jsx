@@ -61,7 +61,6 @@ export default function RecordScreen({ audioFile, onFileSelected, onClassify, is
 
   return (
     <div className="narw-screen record">
-      <div className="record__hero">
       <div className="record__intro">
         <h1 className="record__headline">
           <span className="record__headline-lead">"I think I heard a</span>
@@ -80,6 +79,7 @@ export default function RecordScreen({ audioFile, onFileSelected, onClassify, is
         </div>
       </div>
 
+      <div className="record__right">
       <div className="record__panel">
         <div className="record__controls">
           <motion.button
@@ -201,10 +201,10 @@ export default function RecordScreen({ audioFile, onFileSelected, onClassify, is
           </motion.button>
         </div>
       </div>
-      </div>
 
       <div className="record__history-divider" />
       <HistoryScreen history={history} />
+      </div>
     </div>
   )
 }

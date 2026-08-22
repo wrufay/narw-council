@@ -1,17 +1,16 @@
+.narw-screen.record {
+  position: absolute;
+  inset: 0;
+}
+
 .record {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
   padding: 0;
 }
 
-/* used to fill the whole panel via position:absolute/inset:0 when this was
-   the only content; now History sits below it, so it flows normally and
-   just claims a comfortable minimum height instead */
-.record__hero {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  min-height: 460px;
-}
-
+/* left column is fixed - never scrolls, always its own full height */
 .record__intro {
   flex: 0 0 45%;
   display: flex;
@@ -20,7 +19,19 @@
   justify-content: center;
   gap: 22px;
   height: 100%;
+  overflow: hidden;
   padding: 40px clamp(24px, 5vw, 56px);
+}
+
+/* right column owns all scrolling - panel + history stack inside it */
+.record__right {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
 }
 
 .record__headline {
@@ -64,17 +75,11 @@
 }
 
 .record__panel {
-  position: relative;
-  z-index: 2;
-  flex: 0 0 55%;
-  height: 100%;
+  flex: none;
   padding: 40px clamp(20px, 4vw, 40px);
-  background: var(--surface);
-  border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 16px;
 }
 
@@ -192,14 +197,14 @@
 }
 
 @media (max-width: 680px) {
-  .record__hero {
+  .record {
     flex-direction: column;
-    min-height: 0;
   }
 
   .record__intro {
     flex: none;
     height: auto;
+    overflow: visible;
     align-items: center;
     text-align: center;
     padding: 28px 24px 0;
@@ -210,11 +215,10 @@
     text-align: center;
   }
 
-  .record__panel {
-    flex: none;
+  .record__right {
+    flex: 1;
     height: auto;
     border-left: none;
     border-top: 1px solid var(--border);
-    padding: 28px 24px;
   }
 }
