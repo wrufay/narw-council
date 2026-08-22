@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Basic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
 @import 'tailwindcss';
 
 :root {
@@ -17,6 +18,9 @@
   --font-title: 'Inter', system-ui, sans-serif;
   --font-mono: 'DM Mono', ui-monospace, monospace;
   --font-intro: 'Basic', system-ui, sans-serif;
+  /* only used for the Record page's quote headline now - Landing's
+     headline moved back to font-display per the user */
+  --font-cursive: 'Instrument Serif', Georgia, serif;
 }
 
 * {

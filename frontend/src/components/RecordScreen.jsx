@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Waveform from './Waveform.jsx'
 import HistoryScreen from './HistoryScreen.jsx'
+import panelWhaleBg from '../assets/tutorial-whale.png'
 import './RecordScreen.css'
 
 export default function RecordScreen({ audioFile, onFileSelected, onClassify, isClassifying, error, history }) {
@@ -68,19 +69,20 @@ export default function RecordScreen({ audioFile, onFileSelected, onClassify, is
         </h1>
         <div className="record__body">
           <p>
-            NARW Council is an AI council which scores the clip on multiple signals and tells NARW
-            calls apart from similar species like humpback, fin, and minke whales.
+            NARW Council is an <span className="record__annotate">AI council</span> which scores the
+            clip on multiple signals and tells NARW calls apart from similar species like humpback,
+            fin, and minke whales.
           </p>
           <p>
             Just record the sound on a boat or upload audio clip and it will give you the answer in
-            tiers based on how confident NARW Council is!
+            tiers based on how <span className="record__annotate">confident</span> NARW Council is!
           </p>
-          <p>If you get a Possible NARW or higher, you can directly notify the team.</p>
         </div>
       </div>
 
       <div className="record__right">
       <div className="record__panel">
+        <img className="record__panel-bg" src={panelWhaleBg} alt="" aria-hidden="true" />
         <div className="record__controls">
           <motion.button
             whileTap={{ scale: 0.94 }}
