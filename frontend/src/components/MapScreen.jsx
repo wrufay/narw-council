@@ -43,12 +43,36 @@ export default function MapScreen({ coords, usedFallbackLocation, result }) {
       style: MAP_STYLE[theme] ?? MAP_STYLE.dark,
       center: coordsRef.current,
       zoom: 6.2,
+      pitch: 60,
+      bearing: -12,
     })
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right')
+    map.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-right')
     mapRef.current = map
 
+    // terrain + sky reset on every style change (like the proximity layer
+    // below), so this whole block re-runs on each 'style.load', not just
+    // the first one
     map.on('style.load', () => {
       const c = coordsRef.current
+
+      if (!map.getSource('mapbox-dem')) {
+        map.addSource('mapbox-dem', {
+          type: 'raster-dem',
+          url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+          tileSize: 512,
+          maxzoom: 14,
+        })
+      }
+      map.setTerrain({ source: 'mapbox-dem', exaggeration: 1.4 })
+
+      if (!map.getLayer('sky')) {
+        map.addLayer({
+          id: 'sky',
+          type: 'sky',
+          paint: { 'sky-type': 'atmosphere', 'sky-atmosphere-sun-intensity': 8 },
+        })
+      }
+
       map.addSource('proximity-radius', { type: 'geojson', data: circlePolygon(c, PROXIMITY_RADIUS_KM) })
       map.addLayer({
         id: 'proximity-radius-fill',
