@@ -146,7 +146,7 @@ Render → New → Web Service → connect this repo
 Start command: uvicorn main:app --host 0.0.0.0 --port $PORT
 ```
 
-Live: `https://narw-council.onrender.com` *(update once deployed)*
+Live: `https://narw-council.onrender.com`
 
 > ⚠️ Free tier cold-starts after inactivity (~30–60s first request) — ping it before demoing.
 
