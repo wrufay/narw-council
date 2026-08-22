@@ -15,7 +15,6 @@ export default function RecordScreen({
   error,
   history,
   coords,
-  usedFallbackLocation,
   onUseCurrentLocation,
   onSetCoords,
 }) {
@@ -156,10 +155,7 @@ export default function RecordScreen({
             </form>
           ) : (
             <>
-              <span className="record__location-text">
-                {usedFallbackLocation ? 'Fallback — ' : ''}
-                {nearestZoneName(coords, haversineDistanceKm)}
-              </span>
+              <span className="record__location-text">{nearestZoneName(coords, haversineDistanceKm)}</span>
               <div className="record__location-actions">
                 <button type="button" className="record__location-btn" onClick={onUseCurrentLocation}>
                   Use Current

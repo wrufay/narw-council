@@ -35,7 +35,6 @@ export default function App() {
 
   const [audioFile, setAudioFile] = useState(null)
   const [coords, setCoords] = useState(FALLBACK_COORDS)
-  const [usedFallbackLocation, setUsedFallbackLocation] = useState(true)
   const [result, setResult] = useState(null)
   const [isClassifying, setIsClassifying] = useState(false)
   const [error, setError] = useState(null)
@@ -53,11 +52,8 @@ export default function App() {
   function handleUseCurrentLocation() {
     if (!navigator.geolocation) return
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setCoords([pos.coords.longitude, pos.coords.latitude])
-        setUsedFallbackLocation(false)
-      },
-      () => setUsedFallbackLocation(true),
+      (pos) => setCoords([pos.coords.longitude, pos.coords.latitude]),
+      () => {}, // geolocation denied/unavailable - coords just stay at their last value
       { timeout: 5000 },
     )
   }
@@ -66,7 +62,6 @@ export default function App() {
 
   function handleSetCoords(lat, lng) {
     setCoords([lng, lat])
-    setUsedFallbackLocation(false)
   }
 
   function handleFileSelected(file) {
@@ -129,19 +124,13 @@ export default function App() {
                 error={error}
                 history={history}
                 coords={coords}
-                usedFallbackLocation={usedFallbackLocation}
                 onUseCurrentLocation={handleUseCurrentLocation}
                 onSetCoords={handleSetCoords}
               />
             }
           />
           <Route path="council" element={<ResultsScreen result={result} onDismiss={handleDismiss} />} />
-          <Route
-            path="map"
-            element={
-              <MapScreen coords={coords} usedFallbackLocation={usedFallbackLocation} result={result} history={history} />
-            }
-          />
+          <Route path="map" element={<MapScreen coords={coords} result={result} history={history} />} />
         </Route>
       </Routes>
     </AnimatePresence>
