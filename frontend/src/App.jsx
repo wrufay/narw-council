@@ -139,12 +139,24 @@ export default function App() {
                 coords={coords}
                 usedFallbackLocation={usedFallbackLocation}
                 onUseCurrentLocation={handleUseCurrentLocation}
-                onSetCoords={handleSetCoords}
+                onChooseOnMap={handleChooseOnMap}
               />
             }
           />
           <Route path="council" element={<ResultsScreen result={result} onDismiss={handleDismiss} />} />
-          <Route path="map" element={<MapScreen coords={coords} result={result} history={history} />} />
+          <Route
+            path="map"
+            element={
+              <MapScreen
+                coords={coords}
+                usedFallbackLocation={usedFallbackLocation}
+                result={result}
+                history={history}
+                pickingLocation={pickingLocation}
+                onPickLocation={handlePickLocation}
+              />
+            }
+          />
         </Route>
       </Routes>
     </AnimatePresence>
