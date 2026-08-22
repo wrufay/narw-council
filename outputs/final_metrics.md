@@ -2,18 +2,18 @@
 
 | Metric | Value |
 |---|---|
-| Accuracy | 81.1% |
-| Precision (NARW) | 70.0% |
-| Recall (NARW) | 63.6% |
-| True positives | 7 |
-| False positives | 3 |
-| False negatives | 4 |
-| True negatives | 23 |
+| Accuracy | 83.8% |
+| Precision (NARW) | 85.7% |
+| Recall (NARW) | 54.5% |
+| True positives | 6 |
+| False positives | 1 |
+| False negatives | 5 |
+| True negatives | 25 |
 
 Per-species breakdown:
 | true_group   |   NARW |   not_NARW |
 |:-------------|-------:|-----------:|
-| NARW         |      7 |          4 |
+| NARW         |      6 |          5 |
 | fin          |      0 |         10 |
-| humpback     |      3 |         10 |
-| minke        |      0 |          3 |
+| humpback     |      0 |         13 |
+| minke        |      1 |          2 |

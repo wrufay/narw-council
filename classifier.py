@@ -43,8 +43,13 @@ def _confidence_tier(confidence: float) -> str:
     return "low"
 
 
-def classify_audio(audio_bytes: bytes) -> dict:
-    bundle = _get_bundle()
+def classify_audio(audio_bytes: bytes, bundle: dict | None = None) -> dict:
+    """bundle defaults to the production model; pass a different loaded
+    bundle (e.g. via joblib.load on another .joblib file) to score audio
+    against a candidate model without touching the production one -
+    used by scripts/compare_expanded.py."""
+    if bundle is None:
+        bundle = _get_bundle()
     y, sr = librosa.load(io.BytesIO(audio_bytes), sr=None, mono=True)
 
     feats = extract_all(y, sr)

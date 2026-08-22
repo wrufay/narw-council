@@ -51,10 +51,7 @@ def _load_features(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray, np.ndarray
     return np.vstack(contour_rows), np.vstack(lbp_rows), np.array(labels)
 
 
-def main() -> None:
-    _write_test_manifest()
-
-    train_df = pd.read_parquet(DATA_DIR / "clips_train.parquet")
+def train_and_save(train_df: pd.DataFrame, output_path: pathlib.Path) -> None:
     print(f"training on {len(train_df)} clips (never reads clips_test.parquet)")
 
     X_contour, X_lbp, y = _load_features(train_df)
@@ -75,7 +72,7 @@ def main() -> None:
     contour_model.fit(X_contour_s, y)
     lbp_model.fit(X_lbp_s, y)
 
-    MODELS_DIR.mkdir(exist_ok=True)
+    output_path.parent.mkdir(exist_ok=True)
     joblib.dump(
         {
             "contour_model": contour_model,
@@ -83,9 +80,23 @@ def main() -> None:
             "lbp_model": lbp_model,
             "lbp_scaler": lbp_scaler,
         },
-        MODELS_DIR / "council_models.joblib",
+        output_path,
     )
-    print(f"saved models to {MODELS_DIR / 'council_models.joblib'}")
+    print(f"saved models to {output_path}")
+
+
+def main() -> None:
+    _write_test_manifest()
+    train_df = pd.read_parquet(DATA_DIR / "clips_train.parquet")[["audio", "group"]]
+
+    expanded_path = DATA_DIR / "clips_train_expanded.parquet"
+    if expanded_path.exists():
+        extra_df = pd.read_parquet(expanded_path)[["audio", "group"]]
+        train_df = pd.concat([train_df, extra_df], ignore_index=True)
+        print(f"including {len(extra_df)} additional clips from scripts/fetch_extra_data.py "
+              f"(see README's Data section for provenance)")
+
+    train_and_save(train_df, MODELS_DIR / "council_models.joblib")
 
 
 if __name__ == "__main__":
