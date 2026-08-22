@@ -36,11 +36,11 @@ export default function App() {
   const [audioFile, setAudioFile] = useState(null)
   const [coords, setCoords] = useState(FALLBACK_COORDS)
   const [usedFallbackLocation, setUsedFallbackLocation] = useState(true)
-  const [pickingLocation, setPickingLocation] = useState(false)
   const [result, setResult] = useState(null)
   const [isClassifying, setIsClassifying] = useState(false)
   const [error, setError] = useState(null)
   const [history, setHistory] = useState(loadHistory)
+  const [pickingLocation, setPickingLocation] = useState(false)
 
   useEffect(() => {
     try {
@@ -70,8 +70,8 @@ export default function App() {
     navigate('/run/map')
   }
 
-  function handlePickLocation(nextCoords) {
-    setCoords(nextCoords)
+  function handlePickLocation(newCoords) {
+    setCoords(newCoords)
     setUsedFallbackLocation(false)
     setPickingLocation(false)
     navigate('/run/classify')
@@ -139,24 +139,12 @@ export default function App() {
                 coords={coords}
                 usedFallbackLocation={usedFallbackLocation}
                 onUseCurrentLocation={handleUseCurrentLocation}
-                onChooseOnMap={handleChooseOnMap}
+                onSetCoords={handleSetCoords}
               />
             }
           />
           <Route path="council" element={<ResultsScreen result={result} onDismiss={handleDismiss} />} />
-          <Route
-            path="map"
-            element={
-              <MapScreen
-                coords={coords}
-                usedFallbackLocation={usedFallbackLocation}
-                result={result}
-                history={history}
-                pickingLocation={pickingLocation}
-                onPickLocation={handlePickLocation}
-              />
-            }
-          />
+          <Route path="map" element={<MapScreen coords={coords} result={result} history={history} />} />
         </Route>
       </Routes>
     </AnimatePresence>

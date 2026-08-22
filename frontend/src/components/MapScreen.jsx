@@ -29,7 +29,7 @@ const WHALE_ICON_SVG =
   '<circle cx="8.6" cy="9.6" r="0.9" fill="#061a40"/>' +
   '</svg>'
 
-export default function MapScreen({ coords, history = [], pickingLocation, onPickLocation }) {
+export default function MapScreen({ coords, history = [] }) {
   const { theme } = useOutletContext() ?? {}
   const containerRef = useRef(null)
   const mapRef = useRef(null)
@@ -37,10 +37,6 @@ export default function MapScreen({ coords, history = [], pickingLocation, onPic
   const coordsRef = useRef(coords)
   coordsRef.current = coords
   const appliedThemeRef = useRef(theme)
-  const onPickLocationRef = useRef(onPickLocation)
-  onPickLocationRef.current = onPickLocation
-  const pickingRef = useRef(pickingLocation)
-  pickingRef.current = pickingLocation
 
   useEffect(() => {
     if (!MAPBOX_TOKEN || !containerRef.current || mapRef.current) return
@@ -76,11 +72,6 @@ export default function MapScreen({ coords, history = [], pickingLocation, onPic
           paint: { 'sky-type': 'atmosphere', 'sky-atmosphere-sun-intensity': 8 },
         })
       }
-    })
-
-    map.on('click', (e) => {
-      if (!pickingRef.current) return
-      onPickLocationRef.current?.([e.lngLat.lng, e.lngLat.lat])
     })
 
     return () => {
@@ -140,7 +131,7 @@ export default function MapScreen({ coords, history = [], pickingLocation, onPic
   }, [history])
 
   return (
-    <div className={`narw-screen map-screen ${pickingLocation ? 'map-screen--picking' : ''}`}>
+    <div className="narw-screen map-screen">
       {!MAPBOX_TOKEN ? (
         <div className="map-screen__no-token">
           Set <code>VITE_MAPBOX_TOKEN</code> in <code>frontend/.env</code> to enable the map (see{' '}
@@ -149,8 +140,6 @@ export default function MapScreen({ coords, history = [], pickingLocation, onPic
       ) : (
         <div ref={containerRef} className="map-screen__canvas" />
       )}
-
-      {pickingLocation && <div className="map-screen__pick-banner">Click the map to set your location</div>}
 
       <div className="map-screen__legend">
         <span>

@@ -17,7 +17,7 @@ export default function RecordScreen({
   coords,
   usedFallbackLocation,
   onUseCurrentLocation,
-  onChooseOnMap,
+  onSetCoords,
 }) {
   const [isRecording, setIsRecording] = useState(false)
   const [recordError, setRecordError] = useState(null)
@@ -25,6 +25,26 @@ export default function RecordScreen({
   const chunksRef = useRef([])
   const fileInputRef = useRef(null)
   const [audioUrl, setAudioUrl] = useState(null)
+  const [editingCoords, setEditingCoords] = useState(false)
+  const [latInput, setLatInput] = useState('')
+  const [lngInput, setLngInput] = useState('')
+
+  function handleToggleEditCoords() {
+    if (!editingCoords) {
+      setLatInput(coords[1].toFixed(4))
+      setLngInput(coords[0].toFixed(4))
+    }
+    setEditingCoords((v) => !v)
+  }
+
+  function handleApplyCoords(e) {
+    e.preventDefault()
+    const lat = parseFloat(latInput)
+    const lng = parseFloat(lngInput)
+    if (Number.isNaN(lat) || Number.isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) return
+    onSetCoords(lat, lng)
+    setEditingCoords(false)
+  }
 
   useEffect(() => {
     if (!audioFile) {
@@ -107,18 +127,49 @@ export default function RecordScreen({
             />
             <circle cx="12" cy="9" r="2.4" stroke="currentColor" strokeWidth="1.8" />
           </svg>
-          <span className="record__location-text">
-            {usedFallbackLocation ? 'Fallback — ' : ''}
-            {nearestZoneName(coords, haversineDistanceKm)}
-          </span>
-          <div className="record__location-actions">
-            <button type="button" className="record__location-btn" onClick={onUseCurrentLocation}>
-              Use Current Location
-            </button>
-            <button type="button" className="record__location-btn" onClick={onChooseOnMap}>
-              Choose on Map
-            </button>
-          </div>
+          {editingCoords ? (
+            <form className="record__coords-form" onSubmit={handleApplyCoords}>
+              <input
+                type="number"
+                step="any"
+                inputMode="decimal"
+                placeholder="Lat"
+                value={latInput}
+                onChange={(e) => setLatInput(e.target.value)}
+                className="record__coords-input"
+              />
+              <input
+                type="number"
+                step="any"
+                inputMode="decimal"
+                placeholder="Long"
+                value={lngInput}
+                onChange={(e) => setLngInput(e.target.value)}
+                className="record__coords-input"
+              />
+              <button type="submit" className="record__location-btn">
+                Set
+              </button>
+              <button type="button" className="record__location-btn" onClick={() => setEditingCoords(false)}>
+                Cancel
+              </button>
+            </form>
+          ) : (
+            <>
+              <span className="record__location-text">
+                {usedFallbackLocation ? 'Fallback — ' : ''}
+                {nearestZoneName(coords, haversineDistanceKm)}
+              </span>
+              <div className="record__location-actions">
+                <button type="button" className="record__location-btn" onClick={onUseCurrentLocation}>
+                  Use Current
+                </button>
+                <button type="button" className="record__location-btn" onClick={handleToggleEditCoords}>
+                  Enter Lat/Long
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="record__controls">

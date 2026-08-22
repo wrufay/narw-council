@@ -163,6 +163,40 @@
   color: var(--tier-high);
 }
 
+.record__coords-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.record__coords-input {
+  width: 62px;
+  padding: 3px 6px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: rgba(6, 26, 64, 0.5);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-align: center;
+}
+
+.record__coords-input:focus {
+  outline: none;
+  border-color: var(--tier-high);
+}
+
+/* hide native number spinners - keeps the pill compact */
+.record__coords-input::-webkit-outer-spin-button,
+.record__coords-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.record__coords-input[type='number'] {
+  -moz-appearance: textfield;
+}
+
 .record__controls {
   display: flex;
   gap: 10px;
