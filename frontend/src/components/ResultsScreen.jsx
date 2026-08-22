@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import { FISHERIES, PROXIMITY_RADIUS_KM } from '../data/fisheries.js'
-import { haversineDistanceKm } from '../lib/geo.js'
 import './ResultsScreen.css'
 
 const CHECK_ORDER = ['contour_shape', 'texture_lbp', 'noise_check']
@@ -13,17 +11,17 @@ const CHECK_LABEL = {
 const TIER_INFO = {
   high: {
     label: 'NARW',
-    message: "It's a NARW! You can notify your team.",
+    message: "It's very likely a NARW call.",
     color: 'var(--tier-high)',
   },
   medium: {
     label: 'Possible NARW',
-    message: 'Human review recommended before notifying.',
+    message: 'Possible NARW call — flagged as medium confidence.',
     color: 'var(--tier-medium)',
   },
   low: {
     label: 'Not NARW',
-    message: 'Confidence too low to notify automatically.',
+    message: 'Confidence too low to be a NARW call.',
     color: 'var(--tier-low)',
   },
 }
@@ -65,9 +63,7 @@ function CheckIcon({ status }) {
   )
 }
 
-export default function ResultsScreen({ result, coords, onDismiss }) {
-  const [notifySent, setNotifySent] = useState(null)
-  const [sentForReview, setSentForReview] = useState(false)
+export default function ResultsScreen({ result, onDismiss }) {
   const [showDetails, setShowDetails] = useState(false)
 
   if (!result) {
@@ -79,14 +75,6 @@ export default function ResultsScreen({ result, coords, onDismiss }) {
   }
 
   const tier = TIER_INFO[result.confidence_tier]
-  const inRange = FISHERIES.filter((f) => haversineDistanceKm(coords, f.coords) <= PROXIMITY_RADIUS_KM)
-
-  function handleNotify() {
-    setNotifySent({
-      at: new Date().toLocaleTimeString(),
-      recipients: inRange.map((f) => f.name),
-    })
-  }
 
   return (
     <div className="narw-screen results">
@@ -124,48 +112,15 @@ export default function ResultsScreen({ result, coords, onDismiss }) {
           </div>
 
           <div className="results__actions">
-            {result.confidence_tier === 'low' ? (
+            {result.confidence_tier === 'low' && (
               <button className="pill-btn results__btn results__btn--low" onClick={onDismiss}>
                 DISMISS
               </button>
-            ) : (
-              <>
-                {result.confidence_tier === 'medium' && (
-                  <button
-                    className="pill-btn results__btn results__btn--high"
-                    onClick={() => setSentForReview(true)}
-                    disabled={sentForReview}
-                  >
-                    {sentForReview ? 'FLAGGED FOR REVIEW' : 'SEND FOR REVIEW'}
-                  </button>
-                )}
-                <button
-                  className={`pill-btn results__btn results__btn--${result.confidence_tier}`}
-                  onClick={handleNotify}
-                  disabled={inRange.length === 0}
-                >
-                  NOTIFY TEAM
-                </button>
-              </>
             )}
             <button className="pill-btn results__btn results__btn--ghost" onClick={() => setShowDetails((v) => !v)}>
               VIEW DETAILS
             </button>
           </div>
-
-          {sentForReview && result.confidence_tier === 'medium' && (
-            <p className="results__review-note">Flagged for human review (simulated) — nothing was actually sent.</p>
-          )}
-
-          {notifySent && (
-            <div className="results__receipt">
-              <span className="results__receipt-badge">SIMULATED — nothing was actually sent</span>
-              <p>
-                At {notifySent.at}, would notify {notifySent.recipients.length} fleet zone
-                {notifySent.recipients.length === 1 ? '' : 's'}: {notifySent.recipients.join(', ')}
-              </p>
-            </div>
-          )}
 
           {showDetails && (
             <div className="results__details">

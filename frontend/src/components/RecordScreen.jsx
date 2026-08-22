@@ -3,9 +3,22 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Waveform from './Waveform.jsx'
 import HistoryScreen from './HistoryScreen.jsx'
 import panelWhaleBg from '../assets/tutorial-whale.png'
+import { nearestZoneName } from '../data/fisheries.js'
+import { haversineDistanceKm } from '../lib/geo.js'
 import './RecordScreen.css'
 
-export default function RecordScreen({ audioFile, onFileSelected, onClassify, isClassifying, error, history }) {
+export default function RecordScreen({
+  audioFile,
+  onFileSelected,
+  onClassify,
+  isClassifying,
+  error,
+  history,
+  coords,
+  usedFallbackLocation,
+  onUseCurrentLocation,
+  onChooseOnMap,
+}) {
   const [isRecording, setIsRecording] = useState(false)
   const [recordError, setRecordError] = useState(null)
   const mediaRecorderRef = useRef(null)
@@ -83,6 +96,31 @@ export default function RecordScreen({ audioFile, onFileSelected, onClassify, is
       <div className="record__right">
       <div className="record__panel">
         <img className="record__panel-bg" src={panelWhaleBg} alt="" aria-hidden="true" />
+
+        <div className="record__location">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 21s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinejoin="round"
+            />
+            <circle cx="12" cy="9" r="2.4" stroke="currentColor" strokeWidth="1.8" />
+          </svg>
+          <span className="record__location-text">
+            {usedFallbackLocation ? 'Fallback — ' : ''}
+            {nearestZoneName(coords, haversineDistanceKm)}
+          </span>
+          <div className="record__location-actions">
+            <button type="button" className="record__location-btn" onClick={onUseCurrentLocation}>
+              Use Current Location
+            </button>
+            <button type="button" className="record__location-btn" onClick={onChooseOnMap}>
+              Choose on Map
+            </button>
+          </div>
+        </div>
+
         <div className="record__controls">
           <motion.button
             whileTap={{ scale: 0.94 }}

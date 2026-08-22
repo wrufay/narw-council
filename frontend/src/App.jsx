@@ -36,6 +36,7 @@ export default function App() {
   const [audioFile, setAudioFile] = useState(null)
   const [coords, setCoords] = useState(FALLBACK_COORDS)
   const [usedFallbackLocation, setUsedFallbackLocation] = useState(true)
+  const [pickingLocation, setPickingLocation] = useState(false)
   const [result, setResult] = useState(null)
   const [isClassifying, setIsClassifying] = useState(false)
   const [error, setError] = useState(null)
@@ -50,7 +51,7 @@ export default function App() {
     }
   }, [history])
 
-  useEffect(() => {
+  function handleUseCurrentLocation() {
     if (!navigator.geolocation) return
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -60,7 +61,21 @@ export default function App() {
       () => setUsedFallbackLocation(true),
       { timeout: 5000 },
     )
-  }, [])
+  }
+
+  useEffect(handleUseCurrentLocation, [])
+
+  function handleChooseOnMap() {
+    setPickingLocation(true)
+    navigate('/run/map')
+  }
+
+  function handlePickLocation(nextCoords) {
+    setCoords(nextCoords)
+    setUsedFallbackLocation(false)
+    setPickingLocation(false)
+    navigate('/run/classify')
+  }
 
   function handleFileSelected(file) {
     setAudioFile(file)
@@ -121,13 +136,26 @@ export default function App() {
                 isClassifying={isClassifying}
                 error={error}
                 history={history}
+                coords={coords}
+                usedFallbackLocation={usedFallbackLocation}
+                onUseCurrentLocation={handleUseCurrentLocation}
+                onChooseOnMap={handleChooseOnMap}
               />
             }
           />
-          <Route path="council" element={<ResultsScreen result={result} coords={coords} onDismiss={handleDismiss} />} />
+          <Route path="council" element={<ResultsScreen result={result} onDismiss={handleDismiss} />} />
           <Route
             path="map"
-            element={<MapScreen coords={coords} usedFallbackLocation={usedFallbackLocation} result={result} />}
+            element={
+              <MapScreen
+                coords={coords}
+                usedFallbackLocation={usedFallbackLocation}
+                result={result}
+                history={history}
+                pickingLocation={pickingLocation}
+                onPickLocation={handlePickLocation}
+              />
+            }
           />
         </Route>
       </Routes>
