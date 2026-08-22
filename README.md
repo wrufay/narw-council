@@ -141,14 +141,19 @@ Fin and minke stay cleanly separated. These are the numbers we quote in the pitc
 
 ## Deployment
 
+Both pieces deploy from this one repo as two free Render services, defined in `render.yaml`:
+
 ```
-Render → New → Web Service → connect this repo
-Start command: uvicorn main:app --host 0.0.0.0 --port $PORT
+Render → New → Blueprint → connect this repo → Apply
 ```
 
-Live: `https://narw-council.onrender.com`
+Render reads `render.yaml` and provisions `narw-council` (the FastAPI backend) and `narw-council-frontend` (the React app, built and served as a static site) together. If `narw-council` already exists as a service you created manually before the Blueprint existed, Render will ask to adopt it into the Blueprint rather than duplicate it — say yes.
 
-> ⚠️ Free tier cold-starts after inactivity (~30–60s first request) — ping it before demoing.
+The frontend's `VITE_API_BASE_URL` is baked in at build time (already pointed at the backend URL below in `render.yaml`); `VITE_MAPBOX_TOKEN` is marked `sync: false` so it's not committed — set it once in the frontend service's dashboard env vars.
+
+Backend live: `https://narw-council.onrender.com`
+
+> ⚠️ Free tier cold-starts after inactivity (~30–60s first request, confirmed ~53s) — ping `/health` before demoing.
 
 ## What this intentionally does not do
 
