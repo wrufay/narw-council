@@ -1,17 +1,19 @@
 <div align="center">
 
-# 🐋 NARW Council
+# 🐋 Right Call
 
-### Was that really a right whale? Find out in seconds, not hours.
+### Was that really a right whale? Find out in seconds — not hours.
 
-**Built at Ignition Hacks V.7** · Nova Scotia ADT
+**Ignition Hacks V.7** · Nova Scotia ADT
 
-[![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Render](https://img.shields.io/badge/Deployed-Render-46E3B7?logo=render&logoColor=white)](https://render.com)
-[![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61DAFB?logo=react&logoColor=white)](https://react.dev)
+[![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Render](https://img.shields.io/badge/Backend-Render-46E3B7?logo=render&logoColor=white)](https://render.com)
+[![Vercel](https://img.shields.io/badge/Frontend-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
 
-**[📦 This repo](https://github.com/wrufay/narw-council)**
+**[🚀 Live app](https://right-call.vercel.app)** · **[📦 Repo](https://github.com/wrufay/narw-council)**
+
+*Right Call — North Atlantic **Right** whale · the **right call** · a whale **call***
 
 </div>
 
@@ -19,152 +21,112 @@
 
 ## The problem
 
-A researcher on a boat thinks they heard a North Atlantic Right Whale call. That's it — one person's ear, in the moment, no way to verify it fast. Because NARW are critically endangered (**~370 left on Earth**), protocol kicks in anyway: contact fisheries, consider a slowdown zone, disrupt operations — all riding on a single subjective judgment call.
+A researcher on a boat thinks they heard a North Atlantic Right Whale (**~370 left on Earth**). Right now that's one person's ear, in the moment — no fast way to verify. But the stakes force a decision anyway: contact fisheries, consider a slowdown zone, disrupt operations, all off a guess. Get it wrong either way and it costs something — a false alarm wastes disruption and trust; a dismissed real call misses a protection window that won't come back.
 
-- **False alarm** → wasted disruption, eroded trust in the system
-- **Dismissed real call** → a missed protection window for one of the rarest large animals alive
-
-The bottleneck was never the science. It's **confidence and speed of confirmation**.
+**The bottleneck isn't the science. It's confidence and speed.**
 
 ## The solution
 
-Record or upload a clip → the classifier scores it through independent checks, not one opaque number → a confidence tier drives what happens next → the map shows who to contact.
+Record or upload a clip → an ML **council** of independent checks votes on what it hears → a confidence tier tells you what to do next → a map shows who to contact if it matters. Built to be trusted by a scientist on a moving boat: legible, honest about uncertainty, one clear action per screen.
 
 ```
-🎙️ record/upload  →  🧩 council of checks  →  📊 confidence tier  →  🗺️ map + action
+🎙️ record/upload → 🧩 council of checks → 📊 confidence tier → 🗺️ map + action
 ```
 
-## Stack & how it connects
+## Stack
 
-One repo, two pieces talking over one HTTP call: the ML backend (FastAPI + scikit-learn, deployed on Render) and `frontend/` (React + Vite, built to a Figma design) — record/upload UI, council display, Mapbox GL map, simulated notify button. The frontend POSTs audio to `/classify` and renders the JSON; no other coupling.
+```
+/frontend (Vercel)              /backend (Render)
+HTML/CSS/JS, Mapbox GL   ──▶     FastAPI + scikit-learn
+record UI, council panel        energy filter → contour +
+map, notify (simulated)   ◀──   LBP features → classifier
+```
 
-`Python` · `FastAPI` · spectrogram/LBP signal processing · `scikit-learn` · `Render` — `React` · `Vite` · `Mapbox GL` (frontend)
+One repo, two deploys. Frontend is hand-built (Claude Code, against locked Figma + `style.md` tokens) — dropped an earlier Base44 prototype to remove a paywall and a Mapbox-compatibility risk, and to match the design spec exactly.
 
-## Meet the council
+## The council
 
-One pipeline, three independent sub-scores shown as votes instead of a black-box number:
+Two independent feature channels vote instead of one black-box score:
 
-| Council member | What it checks |
+| Check | What it looks at |
 |---|---|
-| **Contour / Shape** | Frequency sweep and duration shape of the call |
-| **Texture (LBP)** | Fine-grained texture pattern in the spectrogram |
-| **Noise check** | How clean vs. noisy the surrounding signal is |
+| **Contour / Shape** | Frequency sweep + duration of the call |
+| **Texture (LBP)** | Fine-grained spectrogram texture |
+| **Noise** | Signal cleanliness |
 
-Agreement → high confidence, act fast. Disagreement → medium confidence, flag for human review instead of guessing. That disagreement is the point — a single number could never show it.
+Agreement → high confidence, act fast. Disagreement → medium confidence, flag for review. The disagreement *is the signal* a single number can't give you.
 
 ## Grounded in real research
 
-Two-stage method from a peer-reviewed acoustic detection approach, not an invented architecture:
+> Esfahanian, Zhuang, Erdol & Gerstein (2017). *Detection of North Atlantic Right Whale Upcalls Using Local Binary Patterns in a Two-Stage Strategy.* Applied Acoustics, 120, 158–166. [Free preprint →](https://arxiv.org/pdf/1611.04947)
 
-> Esfahanian, Zhuang, Erdol & Gerstein (2017). *Detection of North Atlantic Right Whale Upcalls Using Local Binary Patterns in a Two-Stage Strategy.* Applied Acoustics, 120, 158–166. [arxiv.org/pdf/1611.04947](https://arxiv.org/pdf/1611.04947)
+Our council mirrors their two-stage method: energy filter → contour + LBP texture features → classical classifier (SVM/LDA/TreeBagger). Their reported result: 92.73% accuracy (Linear SVM + LBP) on their dataset — cited here for method grounding, not compared directly (different data, different task framing; our own numbers are below).
 
-```
-raw audio → energy pre-filter → [contour-shape features] + [LBP texture histogram] → SVM votes
-```
-
-The paper's own numbers (Cornell Bioacoustics dataset, not ours): LBP + Linear SVM hit 92.73%, beating contour-only by ~3–4% across every classifier tested — why texture is one of our two core channels. **Our numbers, on our own held-out test set, are below** — different dataset, don't expect them to match.
-
-**Why NARW specifically:** NARW calls are frequently confused with humpback calls, which are louder and far more common in the same waters. "Whale detected" isn't useful — "specifically the endangered one" is.
+**Why NARW specifically:** NARW calls are easily confused with the louder, more common humpback. "Whale detected" isn't useful — "this is the endangered one" is.
 
 ## API
 
-### `POST /classify`
-
-In: multipart audio (wav/mp3). Out:
-
+**`POST /classify`** — audio in, JSON out:
 ```json
 {
   "prediction": "NARW",
   "confidence": 0.87,
   "confidence_tier": "high",
   "council": {
-    "contour_shape": { "vote": true,  "score": 0.91 },
-    "texture_lbp":   { "vote": true,  "score": 0.88 },
-    "noise_check":   { "vote": true,  "score": 0.79 }
+    "contour_shape": { "vote": true, "score": 0.91 },
+    "texture_lbp":   { "vote": true, "score": 0.88 },
+    "noise_check":   { "vote": true, "score": 0.79 }
   }
 }
 ```
 
-| Tier | Meaning | Frontend action |
-|---|---|---|
-| 🟢 High | Strong, aligned signal | Map lights up, notify becomes primary action |
-| 🟡 Medium | Ambiguous / mixed votes | Human review recommended, clip saved, no auto-escalation |
-| 🔴 Low | Likely not NARW | Logged anyway — patterns over time still matter |
-
-## Running it
-
-```bash
-git clone https://github.com/wrufay/narw-council && cd narw-council
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-Model weights (`models/council_models.joblib`) are committed directly — no download step needed. To retrain from scratch:
-
-```bash
-python scripts/fetch_data.py         # base Watkins DB clips → data/
-python scripts/fetch_extra_data.py   # additional clips from the full Watkins archive (optional, see Data)
-python train.py                      # → models/council_models.joblib
-python verify.py                     # evaluates on held-out data/clips_test.parquet → outputs/
-```
-
-Run + test locally:
-
-```bash
-uvicorn main:app --reload --port 8000
-curl -X POST http://localhost:8000/classify -F "audio=@sample_clips/test.wav"
-```
-
-## Data
-
-Public sources only — **Watkins Marine Mammal Sound Database** (NARW + comparison species: humpback, fin, minke). No reuse of prior/internal work. Started from a 148-clip curated subset (HuggingFace mirror), expanded to 682 by pulling additional real clips from the full Watkins archive on archive.org — same public source, just more of it.
-
-## Verified, not just claimed
-
-Evaluated against a **frozen 37-clip held-out test set** (11 NARW, 13 humpback, 10 fin, 3 minke) that training code never touches — exact list in `outputs/test_manifest.json`, full writeup in `outputs/verification_notes.md`.
-
-| Check | Result |
+| Tier | Meaning |
 |---|---|
-| Held-out test set confirmed | ✅ 0 duplicate clips between train/test |
-| Not just predicting NARW for everything | ✅ produces both predictions |
-| Confidence tracks correctness | ✅ correct calls score higher confidence than wrong ones |
-| Council sub-scores are independent | ✅ contour/LBP disagree on 5/37 (14%) of clips |
-| Data leakage | Checked — 0 duplicate hashes between train and test |
+| 🟢 High | Strong signal → notify becomes primary action |
+| 🟡 Medium | Mixed votes → flagged for human review, no auto-escalation |
+| 🔴 Low | Likely not NARW → logged, not discarded |
 
-**Accuracy: 83.8% · Precision (NARW): 85.7% · Recall (NARW): 54.5%** (n=37, same frozen test set throughout — `outputs/final_metrics.md`, `outputs/confusion_matrix.png`)
+## Verified numbers
 
-**The honest tradeoff:** expanding training data from 148 → 682 clips improved precision substantially (70.0% → 85.7%) by fully eliminating the model's worst confusion — humpback calls misread as NARW (3/13 false positives → 0/13). Recall dropped (63.6% → 54.5%): the model now misses more real NARW calls. **We chose this deliberately.** A confidently-wrong "yes, NARW" triggers costly escalation with no safety net; a missed real call still lands in the medium/low tier and gets logged, not discarded. Traced clip-by-clip, not just the aggregate delta: 4 of 6 wrong calls are the same clips the old model already missed at similarly high confidence (pre-existing hard cases, not new), 1 is a new minke false positive, 1 is a hairline clip that crossed the decision boundary by a few hundredths.
+Frozen 37-clip held-out test set, untouched across every retrain, zero hash overlap confirmed.
 
-**Known limitation:** four NARW clips (`81015005`, `56025009`, `81015002`, `81014029`) are misclassified at high confidence by both the old and new model — likely atypical calls, not something more data fixed. Worth a manual listen; flagged here rather than hidden.
+**Accuracy 83.8% · Precision (NARW) 85.7% · Recall (NARW) 54.5%**
 
-Fin and minke stay cleanly separated. These are the numbers we quote in the pitch — not the source paper's 92.73%, which is a different dataset and task.
+Trained on 682 real Watkins DB clips (up from an initial 148). Precision jumped by eliminating our worst confusion case — humpback false positives, 3/13 → 0/13. Recall dropped as a real tradeoff: we chose precision deliberately, since the problem we're solving is *uncertain guesses triggering costly escalation* — fewer confidently-wrong "yes" calls matters more here, and a missed real call still degrades gracefully into the medium tier rather than vanishing. Four NARW clips remain misclassified at high confidence in both old and new models — flagged as a known limitation, likely atypical calls or source-data noise, not something more data fixed.
 
-## Deployment
+Full breakdown: `backend/outputs/final_metrics.md` · Confusion matrix: `backend/outputs/confusion_matrix.png`
 
-Both pieces deploy from this one repo as two free Render services, defined in `render.yaml`:
+**Data:** Watkins Marine Mammal Sound Database only — public, no reused prior work.
 
+## Run it
+
+```bash
+# backend
+cd backend && python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt && uvicorn main:app --reload --port 8000
+
+# frontend — no build step
+cd frontend && python3 -m http.server 3000
 ```
-Render → New → Blueprint → connect this repo → Apply
-```
 
-Render reads `render.yaml` and provisions `narw-council` (the FastAPI backend) and `narw-council-frontend` (the React app, built and served as a static site) together. If `narw-council` already exists as a service you created manually before the Blueprint existed, Render will ask to adopt it into the Blueprint rather than duplicate it — say yes.
+## Deploy
 
-The frontend's `VITE_API_BASE_URL` is baked in at build time (already pointed at the backend URL below in `render.yaml`); `VITE_MAPBOX_TOKEN` is marked `sync: false` so it's not committed — set it once in the frontend service's dashboard env vars.
+**Backend (Render):** root dir `backend`, start command `uvicorn main:app --host 0.0.0.0 --port $PORT` → `narw-council.onrender.com`
+**Frontend (Vercel):** root dir `frontend`, no build step → `right-call.vercel.app`
 
-Backend live: `https://narw-council.onrender.com`
+> ⚠️ Render free tier cold-starts (~30–60s) — pinged before demos.
 
-> ⚠️ Free tier cold-starts after inactivity (~30–60s first request, confirmed ~53s) — ping `/health` before demoing.
+## Design
 
-## What this intentionally does not do
+Full tokens (palette, type, spacing) locked in `style.md` — shared source of truth for Figma mockups and the live build.
 
-- No real contact/notification infrastructure — "notify" is simulated for the demo
-- Council = one pipeline, multiple independent sub-scores — not four separately trained models
-- Not claiming to beat state-of-the-art — claiming to be **real, grounded, and honest about uncertainty**
+## What this doesn't do
+
+No real contact infrastructure (notify is simulated) · council = one pipeline, multiple sub-scores, not four models · not claiming state-of-the-art, claiming **real, grounded, honest about uncertainty**
 
 ---
-
 <div align="center">
 
-*Built with 🐋 and not enough sleep at Ignition Hacks V.7*
+*Built with 🐋 at Ignition Hacks V.7*
 
 </div>
