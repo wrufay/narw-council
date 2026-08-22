@@ -10,11 +10,12 @@ const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
 
 const TIER_COLOR = { high: '#758e4f', medium: '#f6ae2d', low: '#6b7280' }
 
-// photoreal satellite terrain (per reference screenshot) - no meaningful
-// light/dark variant for real imagery, so both keys point at the same style
+// both photoreal satellite terrain - dark is bare imagery, light adds the
+// streets/labels overlay for a brighter, more legible variant with the
+// same 3D vibe
 const MAP_STYLE = {
   dark: 'mapbox://styles/mapbox/satellite-v9',
-  light: 'mapbox://styles/mapbox/satellite-v9',
+  light: 'mapbox://styles/mapbox/satellite-streets-v12',
 }
 
 // simple whale silhouette, no emoji - used both on the map marker (raw HTML)
