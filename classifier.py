@@ -7,6 +7,7 @@ scores a raw audio clip through the exact same feature pipeline
 
 import io
 import pathlib
+import subprocess
 
 import joblib
 import librosa
@@ -43,6 +44,26 @@ def _confidence_tier(confidence: float) -> str:
     return "low"
 
 
+def _transcode_to_wav(audio_bytes: bytes) -> bytes:
+    """Fallback for containers soundfile/librosa can't parse directly -
+    notably audio/webm (Opus), which is what the browser's MediaRecorder
+    produces for a live "Record" click in the frontend. Shells out to
+    ffmpeg (must be on PATH - see README's deploy note) to transcode to
+    a plain mono 16kHz WAV, which soundfile always reads natively."""
+    try:
+        result = subprocess.run(
+            ["ffmpeg", "-i", "pipe:0", "-ar", "16000", "-ac", "1", "-f", "wav", "pipe:1"],
+            input=audio_bytes,
+            capture_output=True,
+            check=True,
+        )
+    except FileNotFoundError as exc:
+        raise RuntimeError("ffmpeg not found on PATH - required to decode this audio format") from exc
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError(f"ffmpeg could not decode this audio: {exc.stderr.decode(errors='replace')[-300:]}") from exc
+    return result.stdout
+
+
 def classify_audio(audio_bytes: bytes, bundle: dict | None = None) -> dict:
     """bundle defaults to the production model; pass a different loaded
     bundle (e.g. via joblib.load on another .joblib file) to score audio
@@ -50,7 +71,14 @@ def classify_audio(audio_bytes: bytes, bundle: dict | None = None) -> dict:
     used by scripts/compare_expanded.py."""
     if bundle is None:
         bundle = _get_bundle()
-    y, sr = librosa.load(io.BytesIO(audio_bytes), sr=None, mono=True)
+    try:
+        y, sr = librosa.load(io.BytesIO(audio_bytes), sr=None, mono=True)
+    except Exception:
+        # soundfile/librosa couldn't parse the container directly (e.g.
+        # webm/Opus from the browser recorder) - fall back to an ffmpeg
+        # transcode, then retry the load once.
+        wav_bytes = _transcode_to_wav(audio_bytes)
+        y, sr = librosa.load(io.BytesIO(wav_bytes), sr=None, mono=True)
 
     feats = extract_all(y, sr)
 

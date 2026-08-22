@@ -116,6 +116,16 @@ cd frontend && python3 -m http.server 3000
 
 > ⚠️ Render free tier cold-starts (~30–60s) — pinged before demos.
 
+> ⚠️ `/classify` shells out to `ffmpeg` to transcode non-WAV/FLAC audio (e.g. the
+> `audio/webm` a browser's `MediaRecorder` produces) before handing it to
+> `librosa`/`soundfile`. This needs the `ffmpeg` binary on `PATH` in whatever
+> environment runs the backend. Verified locally (Homebrew `ffmpeg` on macOS) —
+> **not yet verified on the actual Render deploy target**, since a real deploy is
+> out of scope here (see `CLAUDE.md`). If Render's native Python runtime image
+> doesn't ship `ffmpeg`, this will need a Dockerfile-based deploy instead, or an
+> `apt`-installable buildpack — confirm before relying on recorded (not uploaded)
+> clips working in production.
+
 ## Design
 
 Full tokens (palette, type, spacing) locked in `style.md` — shared source of truth for Figma mockups and the live build.
