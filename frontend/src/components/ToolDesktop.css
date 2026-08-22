@@ -116,15 +116,20 @@
 
 .tool-desktop__titlebar {
   flex: none;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 14px 20px;
   border-bottom: 1px solid var(--titlebar-border);
 }
 
+.tool-desktop__titlebar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
 .tool-desktop__title {
-  justify-self: center;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 13px;
@@ -134,7 +139,6 @@
 }
 
 .tool-desktop__traffic-lights {
-  justify-self: start;
   display: flex;
   align-items: center;
   gap: 8px;

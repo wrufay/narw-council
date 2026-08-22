@@ -83,13 +83,15 @@ export default function ToolDesktop() {
 
       <div className={`tool-desktop__screen ${theme === 'light' ? 'tool-desktop__screen--light' : ''}`}>
         <div className="tool-desktop__titlebar">
-          <div className="tool-desktop__traffic-lights">
-            <NavLink to="/" className="tool-desktop__dot tool-desktop__dot--red" aria-label="Close, back to home" />
-          </div>
+          <div className="tool-desktop__titlebar-left">
+            <div className="tool-desktop__traffic-lights">
+              <NavLink to="/" className="tool-desktop__dot tool-desktop__dot--red" aria-label="Close, back to home" />
+            </div>
 
-          <span className="tool-desktop__title">
-            {location.pathname.startsWith('/run/map') ? 'Right Risks — Historical Data' : ''}
-          </span>
+            {location.pathname.startsWith('/run/map') && (
+              <span className="tool-desktop__title">Right Risks — Historical Data</span>
+            )}
+          </div>
 
           <div className="tool-desktop__titlebar-actions">
             <button
