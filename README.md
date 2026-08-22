@@ -62,6 +62,12 @@ Response:
 - `confidence_score`: 0-1, weighted combination of the council checks
 - `council`: each check's individual `vote` (`pass | warn | fail`), numeric `score`, and human-readable `detail` for the council display
 
+## Deploy to Render
+
+This repo includes a `render.yaml` blueprint. In the Render dashboard: **New > Blueprint**, connect this GitHub repo, and Render will pick up the build/start commands and health check automatically. Once live, `GET /health` should return `{"status": "ok", ...}` and `POST /classify` is reachable at `https://<service>.onrender.com/classify`.
+
+Free tier spins down after inactivity — first request after idle takes ~30-60s. Ping `/health` a few minutes before a live demo.
+
 ## Current model
 
 `classifier.py` implements the council checks as **DSP heuristics** (frequency-band energy, rising contour, call duration, spectral flatness) tuned to known NARW upcall characteristics — this is a placeholder standing in for a trained classifier, not four separate models. It runs correctly end-to-end and can be swapped out once a model is trained on labeled clips (e.g. Watkins Marine Mammal Sound DB), without changing the `/classify` request/response contract.
