@@ -33,12 +33,19 @@ without needing to invent anything outside what you picked.
 
 ## Typography
 
-- **Primary typeface: Syne** (variable) — use its weight range for both body and headers,
-  don't add a second family. Geometric, slightly technical, fits the instrument-panel feel.
+- **Primary typeface: Syne** (variable, weights 400–800) — body text, headers, UI labels, buttons.
+  Geometric, slightly technical, fits the instrument-panel feel.
+- **Secondary typeface: DM Mono** (weights 300/400/500, incl. italics) — used ONLY for numeric/data
+  display: confidence percentages, council scores, timestamps in the detection log. Reinforces the
+  "research instrument readout" feel — numbers should look measured, not decorative.
 - Drop Hammersmith One (too playful/rounded) and Vollkorn (serif, wrong register) if either
   is still under consideration — neither matches this direction.
 - Generous line-height and letter spacing on headers — the whole aesthetic relies on air/space,
   not density.
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Syne:wght@400..800&display=swap');
+```
 
 ## Shape & spacing
 
@@ -59,8 +66,24 @@ without needing to invent anything outside what you picked.
 
 - Use a **dark Mapbox style** so the map blends into the rest of the UI rather than looking
   like a bright default map dropped into a dark app
-- Detection point marker: `accent` (teal)
+- Detection point marker: **whale icon/silhouette**, not a generic pin — small on-theme detail,
+  cheap to do, reinforces what the detection actually is at a glance
 - Fisheries-in-range highlight: `warning` (amber) — consistent with the tiering logic elsewhere
+
+## ⚠️ Moodboard note — two directions, pick one explicitly
+
+Tonight's moodboard mixes two aesthetics that don't blend cleanly:
+
+1. **Dark abstract/nebula textures + whale/jellyfish photography** — fits this doc, good as
+   atmospheric/hero-image inspiration.
+2. **Glossy Windows/Aqua-style UI chrome** (title bars, messenger windows, gradient pill
+   buttons, heavy drop shadows) — this is skeuomorphic/y2k Frutiger Aero, and it directly
+   contradicts "minimal shadows, flat, instrument panel" above.
+
+**Don't build both.** If the team wants to pivot toward the glossy/y2k direction instead,
+that's a real decision to make explicitly — not something that should happen by accident
+from mixing reference images. Absent an explicit call, this doc's flat/minimal direction
+stands, and only the photography/texture half of tonight's moodboard applies.
 
 ## Quick prompt block (paste into Base44)
 
