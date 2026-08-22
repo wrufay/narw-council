@@ -64,10 +64,18 @@ Public sources only — no reuse of prior/DFO-internal work or datasets:
 
 ```bash
 git clone <repo-url>
-cd narw-council-backend
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
+cd narw-council
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
+```
+
+Trained model weights (`models/council_models.joblib`, ~15KB) are committed directly — small enough that Git LFS isn't needed. You only need to retrain if you're changing the method:
+
+```bash
+python scripts/fetch_data.py   # pulls Watkins DB clips (HuggingFace confit/wmms-parquet mirror) into data/ (gitignored, regenerable)
+python train.py                # trains on data/clips_train.parquet, writes models/council_models.joblib
+python verify.py               # evaluates on the held-out data/clips_test.parquet, writes outputs/
 ```
 
 ## Running locally
@@ -83,15 +91,19 @@ curl -X POST http://localhost:8000/classify -F "audio=@sample_clips/test.wav"
 
 ## Verification
 
-Before this is considered production-ready for the demo, confirm:
+Run against a held-out test set (37 clips from the Watkins DB's own pre-made test split: 11 NARW, 13 humpback, 10 fin, 3 minke) that `train.py` never touches — see `outputs/test_manifest.json` (exact list of held-out clips) and `outputs/verification_notes.md` for the full writeup. Results, real and unfudged:
 
-- [ ] Evaluated on a **held-out test set** never seen during training (not reused training data)
-- [ ] **Confusion matrix** built — confirms actual discrimination between NARW and other species, not a bias toward one class
-- [ ] **Confidence distribution checked** — correct predictions should generally score higher confidence than incorrect ones
-- [ ] **Council sub-scores diverge** on at least some ambiguous clips — if they always agree, they aren't independent signals
-- [ ] 🚨 If accuracy is suspiciously high (95%+), checked for train/test data leakage (same recording session or near-duplicate clips in both sets)
+| Check | Result |
+|---|---|
+| Held-out test set confirmed | ✅ 0 exact-duplicate clips between train/test |
+| Not just predicting NARW for everything | ✅ produces both predictions; fin/minke both 0% false-positive on this test set |
+| Confidence tracks correctness | ✅ 0.847 mean confidence-in-prediction on correct calls vs. 0.734 on wrong calls |
+| Council sub-scores are independent | ✅ contour and LBP disagree on 5/37 (14%) of clips |
+| Leakage check | not triggered — accuracy (81.1%) is below the 95% suspicion threshold; checked anyway, 0 duplicate hashes found |
 
-Real accuracy/precision/recall numbers from our own test set — not the paper's — are what gets quoted in the pitch.
+**Accuracy: 81.1% · Precision (NARW): 70.0% · Recall (NARW): 63.6%** — full breakdown in `outputs/final_metrics.md`, confusion matrix in `outputs/confusion_matrix.png`. The main remaining confusion is NARW/humpback (matches the "why NARW specifically" note above) — fin and minke are both cleanly separated on this test set.
+
+These are the numbers that get quoted in the pitch — not the source paper's 92.73% (different dataset, different task framing).
 
 ## Deployment (Render)
 
