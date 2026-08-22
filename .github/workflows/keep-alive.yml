@@ -1,0 +1,17 @@
+name: Keep backend warm
+
+# Render's free tier spins the backend down after ~15 min of no traffic,
+# costing a ~30-60s cold start on the next real request. Pinging /health
+# every 10 minutes keeps it warm so judges never hit that delay.
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping /health
+        run: curl -sf --max-time 90 https://narw-council.onrender.com/health
