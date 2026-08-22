@@ -6,7 +6,7 @@ check in `PRD_INFRA.md` actually ran against the real app and passed.
 ## Checklist
 
 - [x] Task 1: `/classify` accepts browser-recorded (webm) audio
-- [ ] Task 2: Fisheries placeholder data professional pass
+- [x] Task 2: Fisheries placeholder data professional pass
 - [ ] Task 3: History persists across reload (localStorage)
 
 ## Log
@@ -41,6 +41,32 @@ check in `PRD_INFRA.md` actually ran against the real app and passed.
   is unlikely to hide a real bug since the fix operates on the container format, not on
   what's inside it, but flagging the distinction rather than overclaiming "tested in the
   real UI."
+
+- **Task 2** — `frontend/src/data/fisheries.js`: expanded from 6 to 10 entries (added
+  Annapolis Basin, Shelburne County, Chaleur Bay, Passamaquoddy Bay) and added a `type`
+  field per entry (Lobster / Snow crab / Mixed groundfish / Scallop / Herring) so each
+  reads as a real registry row, not a bare name. Kept the existing "Co-op"/"Association"/
+  "Fleet" generic-org naming convention already in the file (that's what makes these
+  read as plausible without being mistakable for one specific real, findable
+  organization) — added no phone numbers, emails, or addresses, per the "stays obviously
+  fake" rule.
+
+  `MapScreen.jsx`: fishery markers previously used the browser's native `title` attribute
+  for hover info (a plain OS tooltip, not styled, easy to miss). Replaced with a proper
+  Mapbox `Popup` on hover showing name + type, restyled in `MapScreen.css` to match the
+  app's dark glass language (translucent navy, `backdrop-filter: blur`, no default
+  Mapbox white-box/pointer-tip chrome) instead of the browser default.
+
+  Confirmed no emoji anywhere in this data or its rendering (map marker already uses the
+  inline whale SVG from a prior session, not emoji) and no colors outside the locked
+  palette (`STYLE.md`) — fishery dots stay `--tier-medium` amber (in range) /
+  `--tier-low` grey (outside range), nothing new introduced.
+
+  **Check passed**: `npm run build` and `npm run lint` both clean (only pre-existing,
+  unrelated `set-state-in-effect` warnings in other files). Could not visually screenshot
+  the live map from this session (no browser available) — verified by reading the
+  rendered CSS/JSX logic directly rather than eyeballing it; flagging that as a real gap
+  rather than claiming a visual check I didn't actually do.
 
 ## Definition of done
 

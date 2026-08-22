@@ -101,3 +101,37 @@
 .map-dot--outside {
   background: #6b7280;
 }
+
+/* fishery hover popup - overrides Mapbox's default white popup chrome to
+   match the app's dark glass aesthetic */
+.fishery-popup .mapboxgl-popup-content {
+  padding: 10px 14px;
+  background: rgba(6, 26, 64, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(244, 247, 251, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.fishery-popup .mapboxgl-popup-tip {
+  display: none;
+}
+
+.fishery-popup strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: #f4f7fb;
+  white-space: nowrap;
+}
+
+.fishery-popup span {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgba(244, 247, 251, 0.65);
+}

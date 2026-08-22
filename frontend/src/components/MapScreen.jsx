@@ -36,6 +36,7 @@ export default function MapScreen({ coords, usedFallbackLocation, result }) {
   const coordsRef = useRef(coords)
   coordsRef.current = coords
   const appliedThemeRef = useRef(theme)
+  const fisheryPopupRef = useRef(null)
 
   useEffect(() => {
     if (!MAPBOX_TOKEN || !containerRef.current || mapRef.current) return
@@ -91,10 +92,27 @@ export default function MapScreen({ coords, usedFallbackLocation, result }) {
     })
 
     map.on('load', () => {
+      fisheryPopupRef.current = new mapboxgl.Popup({
+        offset: 14,
+        closeButton: false,
+        closeOnClick: false,
+        className: 'fishery-popup',
+      })
+
       FISHERIES.forEach((f) => {
         const el = document.createElement('div')
         el.className = 'map-dot map-dot--outside'
-        el.title = f.name
+        el.addEventListener('mouseenter', () => {
+          fisheryPopupRef.current
+            ?.setLngLat(f.coords)
+            .setHTML(
+              `<strong>${f.name}</strong><span>${f.type}</span>`,
+            )
+            .addTo(map)
+        })
+        el.addEventListener('mouseleave', () => {
+          fisheryPopupRef.current?.remove()
+        })
         const marker = new mapboxgl.Marker({ element: el }).setLngLat(f.coords).addTo(map)
         fisheriesMarkersRef.current.push({ id: f.id, el, marker })
       })
@@ -110,6 +128,7 @@ export default function MapScreen({ coords, usedFallbackLocation, result }) {
       mapRef.current = null
       whaleMarkerRef.current = null
       fisheriesMarkersRef.current = []
+      fisheryPopupRef.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
