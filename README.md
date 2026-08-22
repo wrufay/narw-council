@@ -13,36 +13,23 @@
 
 **[🚀 Live app](https://right-call.vercel.app)**
 
-*Right Call — North Atlantic **Right** whale · the **right call** · a whale **call***
-
 </div>
 
 ---
 
 ## The problem
 
-A researcher on a boat thinks they heard a North Atlantic Right Whale (**~370 left on Earth**). Right now that's one person's ear, in the moment — no fast way to verify. But the stakes force a decision anyway: contact fisheries, consider a slowdown zone, disrupt operations, all off a guess. Get it wrong either way and it costs something — a false alarm wastes disruption and trust; a dismissed real call misses a protection window that won't come back.
+A researcher on a boat thinks they heard a North Atlantic Right Whale (**~370 left on Earth**). That's one person's ear, in the moment, with no fast way to verify — yet the stakes force a decision anyway: contact fisheries, consider a slowdown zone, disrupt operations, all off a guess. A false alarm wastes disruption and trust; a dismissed real call misses a protection window that won't come back.
 
 **The bottleneck isn't the science. It's confidence and speed.**
 
 ## The solution
 
-Record or upload a clip → an ML **council** of independent checks votes on what it hears → a confidence tier tells you what to do next → a map shows who to contact if it matters. Built to be trusted by a scientist on a moving boat: legible, honest about uncertainty, one clear action per screen.
+Record or upload a clip → an ML **council** of independent checks votes on what it hears → a confidence tier tells you what to do next → a map shows who to contact if it matters.
 
 ```
 🎙️ record/upload → 🧩 council of checks → 📊 confidence tier → 🗺️ map + action
 ```
-
-## Stack
-
-```
-/frontend (Vercel)              /backend (Render)
-HTML/CSS/JS, Mapbox GL   ──▶     FastAPI + scikit-learn
-record UI, council panel        energy filter → contour +
-map, notify (simulated)   ◀──   LBP features → classifier
-```
-
-One repo, two deploys. Frontend is hand-built (Claude Code, against locked Figma + `style.md` tokens) — dropped an earlier Base44 prototype to remove a paywall and a Mapbox-compatibility risk, and to match the design spec exactly.
 
 ## The council
 
@@ -56,13 +43,14 @@ Two independent feature channels vote instead of one black-box score:
 
 Agreement → high confidence, act fast. Disagreement → medium confidence, flag for review. The disagreement *is the signal* a single number can't give you.
 
-## Grounded in real research
+Grounded in [Esfahanian, Zhuang, Erdol & Gerstein (2017)](https://arxiv.org/pdf/1611.04947) — energy filter → contour + LBP texture features → classical classifier (SVM/LDA/TreeBagger), same two-stage shape as their published method (their number: 92.73% accuracy on their own dataset, cited for grounding, not a direct comparison).
 
-> Esfahanian, Zhuang, Erdol & Gerstein (2017). *Detection of North Atlantic Right Whale Upcalls Using Local Binary Patterns in a Two-Stage Strategy.* Applied Acoustics, 120, 158–166. [Free preprint →](https://arxiv.org/pdf/1611.04947)
+## Stack
 
-Our council mirrors their two-stage method: energy filter → contour + LBP texture features → classical classifier (SVM/LDA/TreeBagger). Their reported result: 92.73% accuracy (Linear SVM + LBP) on their dataset — cited here for method grounding, not compared directly (different data, different task framing; our own numbers are below).
+- **Backend** (repo root): Python, FastAPI, scikit-learn — deployed on Render
+- **Frontend** (`frontend/`): React + Vite, Mapbox GL, hand-built against a locked Figma + `STYLE.md` tokens — deployed on Vercel
 
-**Why NARW specifically:** NARW calls are easily confused with the louder, more common humpback. "Whale detected" isn't useful — "this is the endangered one" is.
+One repo, two deploys, talking over one HTTP call.
 
 ## API
 
@@ -92,41 +80,30 @@ Frozen 37-clip held-out test set, untouched across every retrain, zero hash over
 
 **Accuracy 83.8% · Precision (NARW) 85.7% · Recall (NARW) 54.5%**
 
-Trained on 682 real Watkins DB clips (up from an initial 148). Precision jumped by eliminating our worst confusion case — humpback false positives, 3/13 → 0/13. Recall dropped as a real tradeoff: we chose precision deliberately, since the problem we're solving is *uncertain guesses triggering costly escalation* — fewer confidently-wrong "yes" calls matters more here, and a missed real call still degrades gracefully into the medium tier rather than vanishing. Four NARW clips remain misclassified at high confidence in both old and new models — flagged as a known limitation, likely atypical calls or source-data noise, not something more data fixed.
+Trained on 682 real Watkins DB clips. We chose precision over recall deliberately — the problem here is *uncertain guesses triggering costly escalation*, so a confidently-wrong "yes" costs more than a missed call, which still degrades gracefully into the medium tier rather than vanishing. Four NARW clips remain misclassified at high confidence in every version of the model — a known limitation, flagged rather than hidden.
 
-Full breakdown: `backend/outputs/final_metrics.md` · Confusion matrix: `backend/outputs/confusion_matrix.png`
+Full breakdown: `outputs/final_metrics.md` · Confusion matrix: `outputs/confusion_matrix.png`
 
 **Data:** Watkins Marine Mammal Sound Database only — public, no reused prior work.
 
 ## Run it
 
 ```bash
-# backend
-cd backend && python3 -m venv .venv && source .venv/bin/activate
+# backend (repo root)
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt && uvicorn main:app --reload --port 8000
 
-# frontend — no build step
-cd frontend && python3 -m http.server 3000
+# frontend
+cd frontend && npm install && npm run dev
 ```
 
 ## Deploy
 
-**Backend (Render):** root dir `backend`, start command `uvicorn main:app --host 0.0.0.0 --port $PORT` → `narw-council.onrender.com`
-**Frontend (Vercel):** root dir `frontend`, no build step → `right-call.vercel.app`
+**Backend (Render):** root dir `.`, start command `uvicorn main:app --host 0.0.0.0 --port $PORT` → `narw-council.onrender.com`
+**Frontend (Vercel):** root dir `frontend` → `right-call.vercel.app`
 
-> ⚠️ Render free tier cold-starts (~30–60s) — pinged before demos.
-
-## Design
-
-Full tokens (palette, type, spacing) locked in `style.md` — shared source of truth for Figma mockups and the live build.
+> ⚠️ Render free tier cold-starts (~30–60s) — ping `/health` before demos.
 
 ## What this doesn't do
 
 No real contact infrastructure (notify is simulated) · council = one pipeline, multiple sub-scores, not four models · not claiming state-of-the-art, claiming **real, grounded, honest about uncertainty**
-
----
-<div align="center">
-
-*Built with 🐋 at Ignition Hacks V.7*
-
-</div>
