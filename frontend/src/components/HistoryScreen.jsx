@@ -11,61 +11,6 @@ const CHECK_LABEL = {
 const TIER_COLOR = { high: 'var(--tier-high)', medium: 'var(--tier-medium)', low: 'var(--tier-low)' }
 const TIER_LABEL = { high: 'NARW', medium: 'Possible NARW', low: 'Not NARW' }
 
-const SAMPLE_KEY = 'sample'
-
-// illustrative only, never counted in the real clip total or grouped by
-// date - just so this page always shows what a populated folder looks like
-const SAMPLE_ENTRIES = [
-  {
-    id: 'sample-1',
-    name: 'sample-clip-01.wav',
-    location: 'Bay of Fundy',
-    timestamp: new Date(2026, 7, 22, 15, 32),
-    result: {
-      prediction: 'NARW',
-      confidence: 0.91,
-      confidence_tier: 'high',
-      council: {
-        contour_shape: { vote: true, score: 0.85 },
-        texture_lbp: { vote: true, score: 0.91 },
-        noise_check: { vote: true, score: 0.88 },
-      },
-    },
-  },
-  {
-    id: 'sample-2',
-    name: 'sample-clip-02.wav',
-    location: 'Gulf of St. Lawrence',
-    timestamp: new Date(2026, 7, 22, 10, 17),
-    result: {
-      prediction: 'NARW',
-      confidence: 0.61,
-      confidence_tier: 'medium',
-      council: {
-        contour_shape: { vote: true, score: 0.61 },
-        texture_lbp: { vote: true, score: 0.77 },
-        noise_check: { vote: false, score: 0.49 },
-      },
-    },
-  },
-  {
-    id: 'sample-3',
-    name: 'sample-clip-03.wav',
-    location: 'Roseway Basin',
-    timestamp: new Date(2026, 7, 21, 18, 50),
-    result: {
-      prediction: 'not_NARW',
-      confidence: 0.22,
-      confidence_tier: 'low',
-      council: {
-        contour_shape: { vote: false, score: 0.52 },
-        texture_lbp: { vote: false, score: 0.24 },
-        noise_check: { vote: false, score: 0.18 },
-      },
-    },
-  },
-]
-
 function dateKey(date) {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
@@ -74,18 +19,9 @@ function formatTime(date) {
   return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
-function FolderIcon({ sample }) {
+function FolderIcon() {
   return (
-    <svg
-      width="40"
-      height="34"
-      viewBox="0 0 24 20"
-      fill={sample ? 'none' : 'var(--surface-2)'}
-      stroke={sample ? 'var(--text-2)' : 'none'}
-      strokeWidth={sample ? '1.5' : '0'}
-      strokeDasharray={sample ? '3 2' : undefined}
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="40" height="34" viewBox="0 0 24 20" fill="var(--surface-2)" xmlns="http://www.w3.org/2000/svg">
       <path d="M2 3a2 2 0 0 1 2-2h5l2 2h9a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3z" />
     </svg>
   )
@@ -107,8 +43,7 @@ export default function HistoryScreen({ history }) {
     return map
   }, [history])
 
-  const isSample = openDate === SAMPLE_KEY
-  const openEntries = isSample ? SAMPLE_ENTRIES : openDate ? groups.get(openDate) ?? [] : []
+  const openEntries = openDate ? groups.get(openDate) ?? [] : []
 
   function handleBack() {
     setOpenDate(null)
@@ -120,7 +55,7 @@ export default function HistoryScreen({ history }) {
       <div className="history__toolbar">
         {openDate ? (
           <button className="history__back" onClick={handleBack}>
-            &larr; {isSample ? 'Sample' : openDate}
+            &larr; {openDate}
           </button>
         ) : (
           <span className="history__toolbar-label">Recent</span>
@@ -130,11 +65,9 @@ export default function HistoryScreen({ history }) {
         </span>
       </div>
 
-      {isSample && (
-        <p className="history__sample-banner">Example data — not from a real session.</p>
-      )}
-
-      {openDate ? (
+      {history.length === 0 ? (
+        <p className="history__empty">No clips reviewed yet.</p>
+      ) : openDate ? (
         <ul className="history__list">
           {openEntries.map((entry) => {
             const tier = entry.result.confidence_tier
@@ -186,15 +119,6 @@ export default function HistoryScreen({ history }) {
               </span>
             </button>
           ))}
-
-          <button
-            className="history__folder history__folder--sample"
-            onClick={() => setOpenDate(SAMPLE_KEY)}
-          >
-            <FolderIcon sample />
-            <span className="history__folder-name">Sample</span>
-            <span className="history__folder-meta">({SAMPLE_ENTRIES.length} example)</span>
-          </button>
         </div>
       )}
     </div>
