@@ -1,0 +1,53 @@
+{
+  "val_fraction": 0.2,
+  "random_state": 42,
+  "n_train_fold": 118,
+  "n_val_fold": 30,
+  "train_fold_group_counts": {
+    "humpback": 41,
+    "NARW": 34,
+    "fin": 32,
+    "minke": 11
+  },
+  "val_fold_group_counts": {
+    "humpback": 10,
+    "NARW": 9,
+    "fin": 8,
+    "minke": 3
+  },
+  "val_fold_paths": [
+    "5511300F.wav",
+    "92201003.wav",
+    "78014008.wav",
+    "6304300O.wav",
+    "59004005.wav",
+    "6301901T.wav",
+    "5601700V.wav",
+    "56028001.wav",
+    "64103004.wav",
+    "6106400O.wav",
+    "64103006.wav",
+    "6104700E.wav",
+    "56025006.wav",
+    "55113007.wav",
+    "6104700F.wav",
+    "6301901L.wav",
+    "63019017.wav",
+    "56018003.wav",
+    "78014003.wav",
+    "63019004.wav",
+    "56025001.wav",
+    "56018001.wav",
+    "61064008.wav",
+    "9220100Z.wav",
+    "63019010.wav",
+    "61079005.wav",
+    "81014033.wav",
+    "74003004.wav",
+    "6107900F.wav",
+    "64103007.wav"
+  ],
+  "overlap_val_vs_test_hashes": 0,
+  "overlap_trainfold_vs_test_hashes": 0,
+  "overlap_trainfold_vs_valfold_hashes": 0
+}
