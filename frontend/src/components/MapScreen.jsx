@@ -15,24 +15,24 @@ const MAP_STYLE = {
   light: 'mapbox://styles/mapbox/light-v11',
 }
 
-// red/yellow, reusing the same red already used for "fail" states
-// elsewhere (ResultsScreen). Low-tier calls intentionally have no color -
-// they're not plotted at all, per "none for those that were false".
-const TIER_DOT_COLOR = { high: '#e0524a', medium: '#f6ae2d' }
-const TIER_DOT_LABEL = { high: 'Very likely NARW', medium: 'Possible NARW' }
+// red/yellow/gray - reusing the same red already used for "fail" states
+// elsewhere (ResultsScreen), and the same gray as --tier-low. All three
+// tiers are plotted now, including low-confidence ("non-valid") calls.
+const TIER_DOT_COLOR = { high: '#e0524a', medium: '#f6ae2d', low: '#6b7280' }
+const TIER_DOT_LABEL = { high: 'Very likely NARW', medium: 'Possible NARW', low: 'Not NARW' }
 
-// simple whale silhouette, no emoji - marks the current/chosen location
+// simple whale silhouette, no emoji - every marker on this map is this
+// shape, tinted per tier via currentColor
 const WHALE_ICON_SVG =
   '<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">' +
   '<path d="M2 13.4C2 8.9 6.6 5.8 12.1 5.8c2.7 0 5.1.9 6.8 2.4.5-.8 1.5-1.6 2.6-1.6-.4 1.1-.6 2.2-.6 3.1 0 .5.1 1 .3 1.5-1.1.3-2.2.4-3.2.3-1.1 2.4-3.9 4.6-8.7 4.6-4 0-7.3-1.1-7.3-2.7z"/>' +
   '<circle cx="8.6" cy="9.6" r="0.9" fill="#061a40"/>' +
   '</svg>'
 
-export default function MapScreen({ coords, usedFallbackLocation, result, history = [], pickingLocation, onPickLocation }) {
+export default function MapScreen({ coords, history = [], pickingLocation, onPickLocation }) {
   const { theme } = useOutletContext() ?? {}
   const containerRef = useRef(null)
   const mapRef = useRef(null)
-  const whaleMarkerRef = useRef(null)
   const detectionMarkersRef = useRef([])
   const coordsRef = useRef(coords)
   coordsRef.current = coords
@@ -78,13 +78,6 @@ export default function MapScreen({ coords, usedFallbackLocation, result, histor
       }
     })
 
-    map.on('load', () => {
-      const whaleEl = document.createElement('div')
-      whaleEl.className = 'map-whale'
-      whaleEl.innerHTML = WHALE_ICON_SVG
-      whaleMarkerRef.current = new mapboxgl.Marker({ element: whaleEl }).setLngLat(coordsRef.current).addTo(map)
-    })
-
     map.on('click', (e) => {
       if (!pickingRef.current) return
       onPickLocationRef.current?.([e.lngLat.lng, e.lngLat.lat])
@@ -93,7 +86,6 @@ export default function MapScreen({ coords, usedFallbackLocation, result, histor
     return () => {
       map.remove()
       mapRef.current = null
-      whaleMarkerRef.current = null
       detectionMarkersRef.current = []
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,16 +106,8 @@ export default function MapScreen({ coords, usedFallbackLocation, result, histor
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
-    whaleMarkerRef.current?.setLngLat(coords)
     map.easeTo({ center: coords, duration: 600 })
   }, [coords])
-
-  useEffect(() => {
-    const whaleEl = whaleMarkerRef.current?.getElement()
-    if (whaleEl) {
-      whaleEl.style.setProperty('--whale-glow', (result && TIER_DOT_COLOR[result.confidence_tier]) || '#6fd8ff')
-    }
-  }, [result])
 
   // historical detection markers, driven by real classify history - not
   // static placeholder data. Rebuilt whenever history changes; lists stay
@@ -139,11 +123,12 @@ export default function MapScreen({ coords, usedFallbackLocation, result, histor
       history.forEach((entry) => {
         const tier = entry.result?.confidence_tier
         const color = TIER_DOT_COLOR[tier]
-        if (!color || !entry.coords) return // low-confidence calls intentionally not shown
+        if (!color || !entry.coords) return
 
         const el = document.createElement('div')
-        el.className = 'map-detection-dot'
-        el.style.setProperty('--dot-color', color)
+        el.className = 'map-detection-whale'
+        el.style.setProperty('--whale-color', color)
+        el.innerHTML = WHALE_ICON_SVG
         el.title = `${TIER_DOT_LABEL[tier]} — ${Math.round((entry.result?.confidence ?? 0) * 100)}%`
         const marker = new mapboxgl.Marker({ element: el }).setLngLat(entry.coords).addTo(map)
         detectionMarkersRef.current.push({ id: entry.id, marker })
@@ -168,13 +153,6 @@ export default function MapScreen({ coords, usedFallbackLocation, result, histor
       {pickingLocation && <div className="map-screen__pick-banner">Click the map to set your location</div>}
 
       <div className="map-screen__legend">
-        {usedFallbackLocation && !pickingLocation && (
-          <p className="map-screen__note">Using a fallback Bay of Fundy location.</p>
-        )}
-        <span>
-          <span className="map-dot-legend map-dot-legend--whale" dangerouslySetInnerHTML={{ __html: WHALE_ICON_SVG }} />
-          Current Location
-        </span>
         <span>
           <span className="map-dot-legend map-dot-legend--high" />
           Very Likely NARW
@@ -182,6 +160,10 @@ export default function MapScreen({ coords, usedFallbackLocation, result, histor
         <span>
           <span className="map-dot-legend map-dot-legend--medium" />
           Possible NARW
+        </span>
+        <span>
+          <span className="map-dot-legend map-dot-legend--low" />
+          Not NARW
         </span>
       </div>
     </div>

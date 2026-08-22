@@ -51,12 +51,6 @@
   gap: 8px;
 }
 
-.map-screen__note {
-  margin: 0 0 2px;
-  font-size: 12px;
-  color: rgba(244, 247, 251, 0.65);
-}
-
 .map-dot-legend {
   display: inline-block;
   width: 14px;
@@ -73,27 +67,16 @@
   background: #f6ae2d;
 }
 
-.map-dot-legend--whale {
-  width: 16px;
-  height: 16px;
-  border-radius: 0;
-  color: #6fd8ff;
+.map-dot-legend--low {
+  background: #6b7280;
 }
 
-.map-whale {
-  width: 26px;
-  height: 26px;
-  color: #6fd8ff;
-  filter: drop-shadow(0 0 6px var(--whale-glow, #6fd8ff));
-}
-
-.map-detection-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--dot-color, #e0524a);
-  border: 2px solid rgba(6, 26, 64, 0.65);
-  box-shadow: 0 0 8px var(--dot-color, #e0524a);
+.map-detection-whale {
+  width: 24px;
+  height: 24px;
+  color: var(--whale-color, #e0524a);
+  filter: drop-shadow(0 0 6px var(--whale-color, #e0524a));
+  cursor: pointer;
 }
 
 .map-screen--picking .map-screen__canvas {
