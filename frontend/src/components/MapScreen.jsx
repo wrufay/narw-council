@@ -29,11 +29,19 @@ const WHALE_ICON_SVG =
   '<circle cx="8.6" cy="9.6" r="0.9" fill="#061a40"/>' +
   '</svg>'
 
+function formatDetectionMeta(entry) {
+  const [lng, lat] = entry.coords
+  const date = entry.timestamp?.toLocaleDateString?.('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  const time = entry.timestamp?.toLocaleTimeString?.('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
+  return { date, time, lat: lat.toFixed(4), lng: lng.toFixed(4) }
+}
+
 export default function MapScreen({ coords, history = [] }) {
   const { theme } = useOutletContext() ?? {}
   const containerRef = useRef(null)
   const mapRef = useRef(null)
   const detectionMarkersRef = useRef([])
+  const detectionPopupRef = useRef(null)
   const coordsRef = useRef(coords)
   coordsRef.current = coords
   const appliedThemeRef = useRef(theme)
@@ -74,10 +82,20 @@ export default function MapScreen({ coords, history = [] }) {
       }
     })
 
+    map.on('load', () => {
+      detectionPopupRef.current = new mapboxgl.Popup({
+        offset: 16,
+        closeButton: true,
+        closeOnClick: true,
+        className: 'detection-popup',
+      })
+    })
+
     return () => {
       map.remove()
       mapRef.current = null
       detectionMarkersRef.current = []
+      detectionPopupRef.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -121,6 +139,18 @@ export default function MapScreen({ coords, history = [] }) {
         el.style.setProperty('--whale-color', color)
         el.innerHTML = WHALE_ICON_SVG
         el.title = `${TIER_DOT_LABEL[tier]} — ${Math.round((entry.result?.confidence ?? 0) * 100)}%`
+        el.addEventListener('click', (e) => {
+          e.stopPropagation()
+          const { date, time, lat, lng } = formatDetectionMeta(entry)
+          detectionPopupRef.current
+            ?.setLngLat(entry.coords)
+            .setHTML(
+              `<strong>${TIER_DOT_LABEL[tier]}</strong>` +
+                `<span>${date} &middot; ${time}</span>` +
+                `<span>${lat}, ${lng}</span>`,
+            )
+            .addTo(map)
+        })
         const marker = new mapboxgl.Marker({ element: el }).setLngLat(entry.coords).addTo(map)
         detectionMarkersRef.current.push({ id: entry.id, marker })
       })

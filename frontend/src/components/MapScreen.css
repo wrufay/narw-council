@@ -79,3 +79,50 @@
   cursor: pointer;
 }
 
+/* detection metadata popup - overrides Mapbox's default white popup
+   chrome to match the app's dark glass aesthetic */
+.detection-popup .mapboxgl-popup-content {
+  padding: 10px 30px 10px 14px;
+  background: rgba(6, 26, 64, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(244, 247, 251, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.detection-popup .mapboxgl-popup-tip {
+  display: none;
+}
+
+.detection-popup .mapboxgl-popup-close-button {
+  color: rgba(244, 247, 251, 0.65);
+  font-size: 16px;
+  padding: 4px 8px;
+}
+
+.detection-popup .mapboxgl-popup-close-button:hover {
+  color: #f4f7fb;
+  background: none;
+}
+
+.detection-popup strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: #f4f7fb;
+  white-space: nowrap;
+  margin-bottom: 4px;
+}
+
+.detection-popup span {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(244, 247, 251, 0.7);
+  white-space: nowrap;
+}
+
