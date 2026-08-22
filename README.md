@@ -9,9 +9,9 @@
 [![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Render](https://img.shields.io/badge/Deployed-Render-46E3B7?logo=render&logoColor=white)](https://render.com)
-[![Base44](https://img.shields.io/badge/Frontend-Base44-6C4EF6)](https://app.base44.com/apps/6a88f4f9ee2b1286f93f1356/editor/preview/)
+[![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61DAFB?logo=react&logoColor=white)](https://react.dev)
 
-**[🚀 Live app](https://app.base44.com/apps/6a88f4f9ee2b1286f93f1356/editor/preview/)** · **[📦 This repo](https://github.com/wrufay/narw-council)**
+**[📦 This repo](https://github.com/wrufay/narw-council)**
 
 </div>
 
@@ -36,9 +36,9 @@ Record or upload a clip → the classifier scores it through independent checks,
 
 ## Stack & how it connects
 
-Two pieces, one HTTP call between them: **this repo** is the ML backend (FastAPI + scikit-learn, deployed on Render). **The frontend lives entirely in [Base44](https://app.base44.com/apps/6a88f4f9ee2b1286f93f1356/editor/preview/)** — record/upload UI, council display, Mapbox GL map, simulated notify button — hosted by Base44 itself, no separate repo. Base44 just POSTs audio to this repo's `/classify` endpoint and renders the JSON.
+One repo, two pieces talking over one HTTP call: the ML backend (FastAPI + scikit-learn, deployed on Render) and `frontend/` (React + Vite, built to a Figma design) — record/upload UI, council display, Mapbox GL map, simulated notify button. The frontend POSTs audio to `/classify` and renders the JSON; no other coupling.
 
-`Python` · `FastAPI` · spectrogram/LBP signal processing · `scikit-learn` · `Render` — `Base44` · `Mapbox GL` (frontend, separate platform)
+`Python` · `FastAPI` · spectrogram/LBP signal processing · `scikit-learn` · `Render` — `React` · `Vite` · `Mapbox GL` (frontend)
 
 ## Meet the council
 

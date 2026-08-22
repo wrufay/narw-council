@@ -1,0 +1,119 @@
+:root {
+  --bg: #061a40;
+  --surface: rgba(11, 79, 108, 0.6);
+  --surface-solid: #0b4f6c;
+  --surface-2: #145c9e;
+  --border: #272932;
+  --text: #f4f7fb;
+  --text-2: #b6c2d9;
+  --tier-high: #758e4f;
+  --tier-medium: #f6ae2d;
+  --tier-low: #6b7280;
+
+  --font-display: 'Syne', system-ui, sans-serif;
+  --font-title: 'Inter', system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+a.btn {
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 12px 24px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 18px;
+  font-family: var(--font-display);
+  text-decoration: none;
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.pill-btn:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.pill-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pill-btn--ghost {
+  background: var(--surface);
+}
+
+.pill-btn--outline {
+  background: transparent;
+}
+
+.narw-nav {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 29px 34px 0;
+  width: 100%;
+  align-self: stretch;
+  box-sizing: border-box;
+}
+
+.narw-nav__brand {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-2);
+  font-size: 20px;
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.narw-nav__links {
+  display: flex;
+  gap: 24px;
+}
+
+.narw-nav__links button {
+  background: none;
+  border: none;
+  color: var(--text-2);
+  font-size: 16px;
+  font-family: var(--font-display);
+}
+
+.narw-nav__links button:hover {
+  color: var(--text);
+}
+
+.narw-screen {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}

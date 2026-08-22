@@ -1,0 +1,82 @@
+.tutorial {
+  background: var(--bg);
+  padding-bottom: 80px;
+}
+
+.tutorial__heading {
+  position: relative;
+  z-index: 2;
+  margin: 24px 0 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(40px, 6vw, 64px);
+  color: var(--text-2);
+}
+
+.tutorial__glow {
+  position: absolute;
+  top: 140px;
+  left: -15%;
+  width: 130%;
+  height: 300px;
+  filter: blur(40px);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.tutorial__glow img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tutorial__body {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  padding: 80px 5vw 0;
+}
+
+.tutorial__quote {
+  margin: 0 0 32px;
+  font-size: clamp(28px, 4vw, 40px);
+  color: var(--text);
+}
+
+.tutorial__quote strong {
+  font-weight: 700;
+  font-size: 1.4em;
+  line-height: 1.2;
+}
+
+.tutorial__copy {
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--text);
+  margin: 0 0 20px;
+}
+
+.tutorial__start {
+  margin-top: 24px;
+  background: var(--surface-2);
+  border-radius: 8px;
+  font-size: 28px;
+  padding: 16px 40px;
+}
+
+.tutorial__whale {
+  position: absolute;
+  right: -5%;
+  bottom: 0;
+  width: 55%;
+  max-width: 620px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.tutorial__whale img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
