@@ -60,10 +60,6 @@ export default function App() {
 
   useEffect(handleUseCurrentLocation, [])
 
-  function handleSetCoords(lat, lng) {
-    setCoords([lng, lat])
-  }
-
   function handleFileSelected(file) {
     setAudioFile(file)
     setResult(null)
@@ -124,8 +120,6 @@ export default function App() {
                 error={error}
                 history={history}
                 coords={coords}
-                onUseCurrentLocation={handleUseCurrentLocation}
-                onSetCoords={handleSetCoords}
               />
             }
           />
