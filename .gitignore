@@ -6,7 +6,8 @@ venv/
 .DS_Store
 
 # regenerable via scripts/fetch_data.py - not vendored into git
-data/
+# (anchored to repo root so it doesn't also swallow frontend/src/data/)
+/data/
 
 # local Ralph-loop run logs
 sweep_run.log

@@ -6,7 +6,8 @@ import ResultsScreen from './components/ResultsScreen.jsx'
 import MapScreen from './components/MapScreen.jsx'
 import HistoryScreen from './components/HistoryScreen.jsx'
 import { classifyAudio, ClassifyError } from './lib/api.js'
-import { FALLBACK_COORDS } from './data/fisheries.js'
+import { FALLBACK_COORDS, nearestZoneName } from './data/fisheries.js'
+import { haversineDistanceKm } from './lib/geo.js'
 
 export default function App() {
   const [screen, setScreen] = useState('splash')
@@ -44,7 +45,17 @@ export default function App() {
     try {
       const data = await classifyAudio(audioFile)
       setResult(data)
-      setHistory((prev) => [{ id: crypto.randomUUID(), name: audioFile.name, coords, result: data }, ...prev])
+      setHistory((prev) => [
+        {
+          id: crypto.randomUUID(),
+          name: audioFile.name,
+          coords,
+          location: nearestZoneName(coords, haversineDistanceKm),
+          timestamp: new Date(),
+          result: data,
+        },
+        ...prev,
+      ])
       setScreen('results')
     } catch (err) {
       setError(err instanceof ClassifyError ? err.message : 'Something went wrong classifying that clip.')
