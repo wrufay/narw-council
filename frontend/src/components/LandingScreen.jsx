@@ -44,14 +44,14 @@ export default function LandingScreen() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
           >
-            right call
+            Right Call
           </motion.h1>
           <p className="landing__subhead">
             Was that really a right whale? Find out in seconds, not hours.
           </p>
 
           <div className="landing__cta-row">
-            <button className="landing__cta-secondary" onClick={() => navigate('/run/record')}>
+            <button className="landing__cta-secondary" onClick={() => navigate('/run/classify')}>
               RUN ANALYSIS
             </button>
           </div>

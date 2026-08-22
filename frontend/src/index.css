@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Basic&display=swap');
+@import 'tailwindcss';
+
 :root {
   --bg: #061a40;
   --surface: rgba(11, 79, 108, 0.6);
@@ -13,6 +16,7 @@
   --font-display: 'Syne', system-ui, sans-serif;
   --font-title: 'Inter', system-ui, sans-serif;
   --font-mono: 'DM Mono', ui-monospace, monospace;
+  --font-intro: 'Basic', system-ui, sans-serif;
 }
 
 * {
@@ -44,15 +48,15 @@ a.btn {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 12px 24px;
-  border-radius: 100px;
+  padding: 9px 18px;
+  border-radius: 8px;
   border: 1px solid var(--border);
   background: var(--surface-2);
   color: var(--text);
-  font-size: 18px;
+  font-size: 14px;
   font-family: var(--font-display);
   text-decoration: none;
-  transition: filter 0.15s ease, opacity 0.15s ease;
+  transition: filter 0.15s ease, opacity 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 
 .pill-btn:hover:not(:disabled) {
@@ -92,6 +96,7 @@ a.btn {
   font-size: 20px;
   font-family: var(--font-display);
   letter-spacing: 0.02em;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -100,15 +105,17 @@ a.btn {
   gap: 24px;
 }
 
-.narw-nav__links button {
+.narw-nav__links a {
   background: none;
   border: none;
   color: var(--text-2);
   font-size: 16px;
   font-family: var(--font-display);
+  text-decoration: none;
 }
 
-.narw-nav__links button:hover {
+.narw-nav__links a:hover,
+.narw-nav__links a.active {
   color: var(--text);
 }
 

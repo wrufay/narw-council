@@ -30,8 +30,10 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  background: var(--surface);
-  border-left: 1px solid var(--border);
+  background: rgba(11, 79, 108, 0.28);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-left: 1px solid rgba(244, 247, 251, 0.12);
 }
 
 .record__headline {
@@ -39,9 +41,9 @@
   max-width: 340px;
   display: flex;
   flex-direction: column;
-  font-family: var(--font-cursive);
-  font-style: italic;
-  font-weight: 400;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 800;
   color: var(--text);
   text-align: left;
 }
@@ -76,10 +78,12 @@
 
 .record__panel {
   flex: none;
-  padding: 40px clamp(20px, 4vw, 40px);
+  min-height: 460px;
+  padding: 48px clamp(20px, 4vw, 40px);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 16px;
 }
 
@@ -89,15 +93,19 @@
 }
 
 .record__control-btn {
-  width: 112px;
-  font-size: 13px;
-  padding: 9px 0;
+  width: 100px;
+  font-size: 12px;
+  padding: 8px 0;
+  background: rgba(244, 247, 251, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-color: rgba(244, 247, 251, 0.2);
 }
 
 .record__control-btn--active {
-  background: var(--tier-medium);
+  background: rgba(246, 174, 45, 0.35);
   border-color: var(--tier-medium);
-  color: var(--bg);
+  color: var(--text);
 }
 
 .record__live {
@@ -157,21 +165,28 @@
 }
 
 .record__reset {
-  font-size: 13px;
-  padding: 10px 18px;
+  font-size: 12px;
+  padding: 9px 18px;
+  background: rgba(244, 247, 251, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-color: rgba(244, 247, 251, 0.2);
 }
 
 .record__submit {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  width: 220px;
+  width: 200px;
   font-size: 13px;
   font-weight: 700;
   padding: 10px 0;
-  background: var(--tier-high);
-  color: var(--bg);
-  border-color: var(--tier-high);
+  background: rgba(117, 142, 79, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--text);
+  border-color: rgba(117, 142, 79, 0.8);
 }
 
 .record__spinner {

@@ -140,9 +140,9 @@
 
 .landing__headline {
   margin: 0;
-  font-family: var(--font-cursive);
-  font-style: italic;
-  font-weight: 400;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 800;
   font-size: clamp(40px, 7vw, 76px);
   line-height: 1;
   letter-spacing: -0.01em;
