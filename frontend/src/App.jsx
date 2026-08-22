@@ -40,7 +40,6 @@ export default function App() {
   const [isClassifying, setIsClassifying] = useState(false)
   const [error, setError] = useState(null)
   const [history, setHistory] = useState(loadHistory)
-  const [pickingLocation, setPickingLocation] = useState(false)
 
   useEffect(() => {
     try {
@@ -65,16 +64,9 @@ export default function App() {
 
   useEffect(handleUseCurrentLocation, [])
 
-  function handleChooseOnMap() {
-    setPickingLocation(true)
-    navigate('/run/map')
-  }
-
-  function handlePickLocation(newCoords) {
-    setCoords(newCoords)
+  function handleSetCoords(lat, lng) {
+    setCoords([lng, lat])
     setUsedFallbackLocation(false)
-    setPickingLocation(false)
-    navigate('/run/classify')
   }
 
   function handleFileSelected(file) {
@@ -139,7 +131,7 @@ export default function App() {
                 coords={coords}
                 usedFallbackLocation={usedFallbackLocation}
                 onUseCurrentLocation={handleUseCurrentLocation}
-                onChooseOnMap={handleChooseOnMap}
+                onSetCoords={handleSetCoords}
               />
             }
           />
@@ -147,14 +139,7 @@ export default function App() {
           <Route
             path="map"
             element={
-              <MapScreen
-                coords={coords}
-                usedFallbackLocation={usedFallbackLocation}
-                result={result}
-                history={history}
-                pickingLocation={pickingLocation}
-                onPickLocation={handlePickLocation}
-              />
+              <MapScreen coords={coords} usedFallbackLocation={usedFallbackLocation} result={result} history={history} />
             }
           />
         </Route>
