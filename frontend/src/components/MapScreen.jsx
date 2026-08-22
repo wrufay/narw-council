@@ -10,11 +10,11 @@ const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
 
 const TIER_COLOR = { high: '#758e4f', medium: '#f6ae2d', low: '#6b7280' }
 
-// matched Mapbox pair - both blue-toned, just light/dark, instead of mixing
-// unrelated styles
+// photoreal satellite terrain (per reference screenshot) - no meaningful
+// light/dark variant for real imagery, so both keys point at the same style
 const MAP_STYLE = {
-  dark: 'mapbox://styles/mapbox/navigation-night-v1',
-  light: 'mapbox://styles/mapbox/navigation-day-v1',
+  dark: 'mapbox://styles/mapbox/satellite-v9',
+  light: 'mapbox://styles/mapbox/satellite-v9',
 }
 
 // simple whale silhouette, no emoji - used both on the map marker (raw HTML)
@@ -43,7 +43,7 @@ export default function MapScreen({ coords, usedFallbackLocation, result }) {
       style: MAP_STYLE[theme] ?? MAP_STYLE.dark,
       center: coordsRef.current,
       zoom: 6.2,
-      pitch: 60,
+      pitch: 70,
       bearing: -12,
     })
     map.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-right')
@@ -63,7 +63,7 @@ export default function MapScreen({ coords, usedFallbackLocation, result }) {
           maxzoom: 14,
         })
       }
-      map.setTerrain({ source: 'mapbox-dem', exaggeration: 1.4 })
+      map.setTerrain({ source: 'mapbox-dem', exaggeration: 2.2 })
 
       if (!map.getLayer('sky')) {
         map.addLayer({
@@ -118,8 +118,11 @@ export default function MapScreen({ coords, usedFallbackLocation, result }) {
   useEffect(() => {
     const map = mapRef.current
     if (!map || !theme || theme === appliedThemeRef.current) return
+    const nextStyle = MAP_STYLE[theme] ?? MAP_STYLE.dark
+    const prevStyle = MAP_STYLE[appliedThemeRef.current] ?? MAP_STYLE.dark
     appliedThemeRef.current = theme
-    map.setStyle(MAP_STYLE[theme] ?? MAP_STYLE.dark)
+    if (nextStyle === prevStyle) return
+    map.setStyle(nextStyle)
   }, [theme])
 
   useEffect(() => {
