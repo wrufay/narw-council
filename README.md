@@ -2,7 +2,7 @@
 
 # 🐋 Right Call
 
-### Was that really a right whale? Find out in seconds — not hours.
+### Make the right call to the right whale's call
 
 **Ignition Hacks V.7** · Nova Scotia ADT
 
